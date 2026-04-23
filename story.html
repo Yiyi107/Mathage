@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathage — Story Mode</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Source+Sans+3:wght@400;600&family=Caveat:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#2A3D2C;--bg2:#1E2E1E;--bg3:#162216;
+  --shelf:#5C3A1A;--shelf2:#7A4E28;--shelf3:#3E2408;
+  --cream:#FDFAF4;--warm:#F5EDD8;--parchment:#EDE0C0;
+  --gold:#C8A84B;--goldl:#E8D090;--goldp:#F7EDD4;
+  --txt:#1c1d1f;--muted:#6a6f73;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --hand:'Caveat',cursive;
+}
+html,body{min-height:100%;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);display:flex;flex-direction:column;min-height:100vh;color:var(--cream)}
+
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:52px;flex-shrink:0;
+  background:rgba(253,250,244,0.94);
+  border-bottom:1px solid rgba(200,185,150,0.4);
+  z-index:10;position:relative;
+}
+.nav-logo{font-family:var(--serif);font-size:18px;font-weight:600;color:#1C3A1E;display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-dot{width:22px;height:22px;border-radius:50%;background:#1C3A1E;display:flex;align-items:center;justify-content:center}
+.logo-seed{width:8px;height:8px;border-radius:50%;background:#B8DFA0}
+.nav-mid{display:flex;align-items:center;gap:6px;font-family:var(--sans);font-size:13px;color:var(--muted)}
+.nav-crumb-sep{color:#C8C0B0;margin:0 4px}
+.nav-crumb-active{color:#1C3A1E;font-weight:600}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-user{font-family:var(--sans);font-size:13px;font-weight:400;color:var(--muted)}
+.nav-streak{display:flex;align-items:center;gap:6px;background:var(--goldp);border-radius:50px;padding:4px 14px;border:1px solid var(--goldl)}
+.streak-num{font-family:var(--serif);font-size:14px;font-weight:600;color:#3A2A00}
+.streak-lbl{font-family:var(--sans);font-size:11px;color:#6A5010}
+
+.page-body{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:48px 40px 60px;
+}
+
+.page-header{text-align:center;margin-bottom:12px}
+.page-eyebrow{
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  letter-spacing:1.2px;text-transform:uppercase;
+  color:rgba(200,185,130,0.55);margin-bottom:10px;
+}
+.page-title{
+  font-family:var(--serif);font-size:36px;font-weight:600;
+  color:var(--goldl);line-height:1.2;margin-bottom:8px;
+  font-style:italic;
+}
+.page-sub{
+  font-family:var(--sans);font-size:14px;font-weight:400;
+  color:rgba(253,250,244,0.45);max-width:420px;margin:0 auto;line-height:1.6;
+}
+
+.shelf-room{
+  width:100%;max-width:1060px;
+  margin-top:40px;
+  background:#1A2A1A;
+  border-radius:12px;
+  padding:32px 40px 40px;
+  border:1px solid rgba(200,185,130,0.12);
+  position:relative;
+}
+
+.shelf-label{
+  font-family:var(--hand);font-size:15px;font-weight:400;
+  color:rgba(200,185,130,0.35);
+  margin-bottom:20px;letter-spacing:0.3px;
+}
+
+.shelf{
+  position:relative;
+  margin-bottom:40px;
+}
+.shelf:last-child{margin-bottom:0}
+
+.shelf-plank{
+  width:100%;height:18px;
+  background:linear-gradient(to bottom,#7A5030,#5C3A18,#4A2E10);
+  border-radius:3px;
+  border-top:2px solid #9A6840;
+  box-shadow:0 4px 16px rgba(0,0,0,0.5);
+  position:relative;z-index:2;
+}
+.shelf-plank::after{
+  content:'';position:absolute;left:0;right:0;top:0;height:5px;
+  background:rgba(255,255,255,0.06);border-radius:3px 3px 0 0;
+}
+.shelf-shadow{
+  width:100%;height:12px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.4),transparent);
+  margin-top:-2px;
+}
+
+.books-row{
+  display:flex;align-items:flex-end;gap:0;
+  padding:0 8px 0 8px;
+  min-height:200px;
+}
+
+.book{
+  position:relative;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  transition:transform 0.2s ease, filter 0.2s ease;
+  transform-origin:bottom center;
+  flex-shrink:0;
+}
+.book:hover{transform:translateY(-14px) scale(1.03);filter:brightness(1.15);z-index:10}
+.book:hover .book-tooltip{opacity:1;transform:translateY(-4px)}
+
+.book-body{
+  position:relative;
+  border-radius:2px 4px 4px 2px;
+  overflow:hidden;
+  box-shadow:-3px 0 8px rgba(0,0,0,0.5), 3px 0 6px rgba(0,0,0,0.3), inset 2px 0 4px rgba(255,255,255,0.06);
+}
+
+.book-spine-inner{
+  width:100%;height:100%;
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  padding:10px 4px;
+}
+.book-ornament-top{
+  width:70%;opacity:0.7;
+}
+.book-ornament-bot{
+  width:70%;opacity:0.7;
+}
+.book-title-spine{
+  font-family:var(--serif);
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  transform:rotate(180deg);
+  text-align:center;
+  letter-spacing:1.5px;
+  line-height:1;
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:4px 0;
+}
+.book-rule{width:60%;height:1px;opacity:0.4;margin:2px auto}
+
+.book-tooltip{
+  position:absolute;bottom:calc(100% + 8px);left:50%;
+  transform:translateX(-50%) translateY(0);
+  background:rgba(20,14,6,0.92);
+  border:1px solid rgba(200,168,75,0.3);
+  border-radius:6px;padding:8px 14px;
+  font-family:var(--sans);font-size:12px;font-weight:400;
+  color:var(--goldl);white-space:nowrap;
+  opacity:0;transition:opacity 0.2s, transform 0.2s;
+  pointer-events:none;z-index:20;
+  text-align:center;line-height:1.4;
+}
+.book-tooltip strong{display:block;font-weight:600;font-size:13px;color:var(--cream)}
+
+.shelf-back{
+  position:absolute;left:0;right:0;
+  background:#16220E;
+  top:0;z-index:0;
+}
+
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(14,20,14,0.75);
+  align-items:center;justify-content:center;z-index:100;
+  backdrop-filter:blur(3px);
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--parchment);
+  border-radius:4px;
+  border:2px solid #A08040;
+  max-width:480px;width:90%;
+  position:relative;
+  box-shadow:0 24px 64px rgba(0,0,0,0.6), inset 0 0 40px rgba(180,140,60,0.08);
+  overflow:hidden;
+}
+.modal-top-border{height:6px;background:repeating-linear-gradient(90deg,#C8A84B 0px,#C8A84B 8px,#8A6020 8px,#8A6020 16px)}
+.modal-inner{padding:32px 36px 36px}
+.modal-ornament{text-align:center;font-size:22px;color:#A08040;margin-bottom:6px;opacity:0.6;letter-spacing:4px}
+.modal-chapter{
+  font-family:var(--sans);font-size:10px;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:#8A6A30;text-align:center;margin-bottom:14px;
+}
+.modal-title{
+  font-family:var(--serif);font-size:26px;font-weight:600;
+  color:#2A1A08;text-align:center;line-height:1.25;margin-bottom:6px;
+}
+.modal-subtitle{
+  font-family:var(--serif);font-size:14px;font-style:italic;
+  color:#7A5A28;text-align:center;margin-bottom:20px;
+}
+.modal-divider{
+  border:none;
+  border-top:1px solid #C8A84B;
+  opacity:0.35;margin:0 auto 20px;width:60%;
+}
+.modal-desc{
+  font-family:var(--sans);font-size:14px;font-weight:400;
+  color:#4A3A20;line-height:1.7;text-align:center;margin-bottom:24px;
+}
+.modal-meta{
+  display:flex;justify-content:center;gap:24px;margin-bottom:28px;
+}
+.meta-item{text-align:center}
+.meta-label{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:#9A7A40;margin-bottom:3px}
+.meta-val{font-family:var(--serif);font-size:15px;font-weight:600;color:#3A2A10}
+.modal-btn{
+  display:block;width:100%;
+  font-family:var(--serif);font-size:15px;font-weight:600;font-style:italic;
+  color:var(--cream);background:#3D5A20;
+  border:none;border-radius:3px;padding:13px 28px;
+  cursor:pointer;transition:background .15s;letter-spacing:0.3px;
+}
+.modal-btn:hover{background:#2D4A14}
+.modal-close{
+  position:absolute;top:14px;right:16px;
+  font-family:var(--sans);font-size:20px;font-weight:300;
+  color:#9A7A40;background:none;border:none;cursor:pointer;line-height:1;
+}
+.modal-close:hover{color:#3A2A10}
+.modal-bot-border{height:6px;background:repeating-linear-gradient(90deg,#C8A84B 0px,#C8A84B 8px,#8A6020 8px,#8A6020 16px)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor:pointer">
+    <div class="logo-dot"><div class="logo-seed"></div></div>
+    mathage
+  </div>
+  <div class="nav-mid">
+    <span style="cursor:pointer;color:#3D7A40;font-weight:600" onclick="window.location.href='dashboard.html'">My Room</span>
+    <span class="nav-crumb-sep">&#8250;</span>
+    <span class="nav-crumb-active">Story Mode</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-user">Alex&#8217;s Place &nbsp;&#183;&nbsp; Grade 7</span>
+    <div class="nav-streak">
+      <span class="streak-num">7</span>
+      <span class="streak-lbl">day streak</span>
+    </div>
+  </div>
+</nav>
+
+<div class="page-body">
+
+  <div class="page-header">
+    <div class="page-eyebrow">Story Mode</div>
+    <h1 class="page-title">The Library of Numbers</h1>
+    <p class="page-sub">Each book holds a world of mathematics. Choose your story and begin the adventure.</p>
+  </div>
+
+  <div class="shelf-room">
+    <div class="shelf-label">&#8220; Choose a volume to begin reading &#8221;</div>
+
+    <!-- SHELF 1: Grade 6 -->
+    <div class="shelf">
+      <div class="books-row" id="row1"></div>
+      <div class="shelf-plank"></div>
+      <div class="shelf-shadow"></div>
+    </div>
+
+    <!-- SHELF 2: Grade 7 -->
+    <div class="shelf">
+      <div class="books-row" id="row2"></div>
+      <div class="shelf-plank"></div>
+      <div class="shelf-shadow"></div>
+    </div>
+
+    <!-- SHELF 3: Grade 8 -->
+    <div class="shelf">
+      <div class="books-row" id="row3"></div>
+      <div class="shelf-plank"></div>
+      <div class="shelf-shadow"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-top-border"></div>
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal()">&#215;</button>
+      <div class="modal-ornament">&#10022; &#10022; &#10022;</div>
+      <div class="modal-chapter" id="m-chapter"></div>
+      <h2 class="modal-title" id="m-title"></h2>
+      <p class="modal-subtitle" id="m-subtitle"></p>
+      <hr class="modal-divider">
+      <p class="modal-desc" id="m-desc"></p>
+      <div class="modal-meta">
+        <div class="meta-item">
+          <div class="meta-label">Grade</div>
+          <div class="meta-val" id="m-grade"></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Chapters</div>
+          <div class="meta-val" id="m-chapters"></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Status</div>
+          <div class="meta-val" id="m-status"></div>
+        </div>
+      </div>
+      <button class="modal-btn" id="modal-open-btn">Open this volume &#8594;</button>
+    </div>
+    <div class="modal-bot-border"></div>
+  </div>
+</div>
+
+<script>
+var books = [
+  // Row 1 — Grade 6
+  {row:1, color:'#7A1A1A', textColor:'#F0D090', accentColor:'#C89040', title:'Ratios &\nProportions', shortTitle:'Ratios', grade:'Grade 6', chapters:5, status:'Available', subtitle:'A Tale of Two Quantities', desc:'Explore the relationship between quantities. From recipes to maps, ratios are everywhere — and this story will show you how to read them.', width:56, height:188},
+  {row:1, color:'#1A3A5C', textColor:'#B8D8F0', accentColor:'#6A9EC0', title:'The\nInteger\nChronicles', shortTitle:'Integers', grade:'Grade 6', chapters:4, status:'Locked', subtitle:'Adventures Below Zero', desc:'Journey into the world of negative numbers. Temperature, depth, debt — integers tell stories in both directions.', width:48, height:196},
+  {row:1, color:'#3A2A5C', textColor:'#D4C0F0', accentColor:'#8A70C0', title:'Expressions\n& Equations', shortTitle:'Expressions', grade:'Grade 6', chapters:6, status:'Locked', subtitle:'The Language of Algebra', desc:'Numbers are words, equations are sentences. Learn to read and write the language that mathematicians use to describe the world.', width:60, height:182},
+  {row:1, color:'#1A4A2A', textColor:'#A8D4A8', accentColor:'#5A9A5A', title:'Geometry\nVolume I', shortTitle:'Geometry I', grade:'Grade 6', chapters:5, status:'Locked', subtitle:'Shapes, Area & Space', desc:'Polygons, area, and the geometry of the world around you. Measure, calculate, and discover the hidden math in every shape.', width:52, height:192},
+  {row:1, color:'#5A3A1A', textColor:'#F0C890', accentColor:'#C08040', title:'Statistics\n& Data', shortTitle:'Statistics', grade:'Grade 6', chapters:4, status:'Locked', subtitle:'Stories Hidden in Numbers', desc:'Data tells stories — if you know how to listen. Mean, median, mode, and the art of reading what numbers are trying to say.', width:50, height:178},
+  {row:1, color:'#6A1A2A', textColor:'#F0A8B8', accentColor:'#B06070', title:'The\nFraction\nSagas', shortTitle:'Fractions', grade:'Grade 6', chapters:5, status:'Locked', subtitle:'Dividing the Whole', desc:'From halves to hundredths, fractions describe the in-between. Master division, multiplication, and the curious world of rational numbers.', width:54, height:200},
+  {row:1, color:'#2A3A1A', textColor:'#B8D090', accentColor:'#70A050', title:'Number\nSystems', shortTitle:'Number Sys.', grade:'Grade 6', chapters:3, status:'Locked', subtitle:'The Universe of Numbers', desc:'Whole numbers, integers, rationals — each number system is a universe. Map them, compare them, and know exactly where you stand.', width:46, height:174},
+
+  // Row 2 — Grade 7
+  {row:2, color:'#5C1A1A', textColor:'#F4C890', accentColor:'#B87030', title:'Proportional\nReasoning', shortTitle:'Proportional', grade:'Grade 7', chapters:6, status:'Locked', subtitle:'The Scale of All Things', desc:'Scaling up, scaling down. Proportional reasoning powers maps, models, and recipes — and this book shows you how to master it.', width:58, height:194},
+  {row:2, color:'#1C3A1C', textColor:'#A8D4B8', accentColor:'#50905A', title:'Algebra\nVolume I', shortTitle:'Algebra I', grade:'Grade 7', chapters:7, status:'Locked', subtitle:'Equations Come Alive', desc:'Variables, expressions, equations — the fundamental tools of algebra. This volume builds your intuition from the ground up.', width:62, height:202},
+  {row:2, color:'#3A1A4A', textColor:'#C8A8E8', accentColor:'#7850A8', title:'Geometry\nVolume II', shortTitle:'Geometry II', grade:'Grade 7', chapters:5, status:'Locked', subtitle:'Angles, Triangles & Proofs', desc:'Triangles hold secrets. From angle sums to the Pythagorean theorem\'s first cousin, this volume unlocks two-dimensional geometry.', width:54, height:186},
+  {row:2, color:'#1A2A4A', textColor:'#A8C0E8', accentColor:'#4870B8', title:'Percent &\nMoney', shortTitle:'Percent', grade:'Grade 7', chapters:4, status:'Locked', subtitle:'The Mathematics of Value', desc:'Discounts, taxes, tips, interest — percent is the language of everyday finance. Learn it here and use it everywhere.', width:50, height:190},
+  {row:2, color:'#4A2A10', textColor:'#F0C880', accentColor:'#B88040', title:'Probability\n& Chance', shortTitle:'Probability', grade:'Grade 7', chapters:4, status:'Locked', subtitle:'The Science of Maybe', desc:'What are the chances? From coin flips to compound events, probability teaches you to reason about uncertainty with precision.', width:52, height:178},
+  {row:2, color:'#1A3A3A', textColor:'#90D0D0', accentColor:'#409898', title:'Surface Area\n& Volume', shortTitle:'Surface Area', grade:'Grade 7', chapters:5, status:'Locked', subtitle:'Into the Third Dimension', desc:'Cubes, prisms, cylinders — three-dimensional shapes have both surface and volume. Learn to measure everything inside and outside.', width:56, height:196},
+  {row:2, color:'#3C2010', textColor:'#E8C090', accentColor:'#A07030', title:'Inequalities', shortTitle:'Inequalities', grade:'Grade 7', chapters:3, status:'Locked', subtitle:'When Equals Isn\'t Enough', desc:'Sometimes the answer isn\'t a single number — it\'s a range. Inequalities describe boundaries, and this book teaches you to find them.', width:44, height:172},
+
+  // Row 3 — Grade 8
+  {row:3, color:'#2A1A0A', textColor:'#D4A860', accentColor:'#906030', title:'Linear\nFunctions', shortTitle:'Functions', grade:'Grade 8', chapters:7, status:'Locked', subtitle:'The Story of Straight Lines', desc:'Lines on a graph are stories of change. Slope, intercept, rate — linear functions are the foundation of all advanced mathematics.', width:60, height:198},
+  {row:3, color:'#0A1A2A', textColor:'#8090B0', accentColor:'#304868', title:'Systems of\nEquations', shortTitle:'Systems', grade:'Grade 8', chapters:5, status:'Locked', subtitle:'Two Truths at Once', desc:'What happens when two equations must both be true? Systems of equations unlock solutions that neither equation could find alone.', width:54, height:186},
+  {row:3, color:'#1A0A2A', textColor:'#A090C0', accentColor:'#483068', title:'Exponents &\nScientific\nNotation', shortTitle:'Exponents', grade:'Grade 8', chapters:4, status:'Locked', subtitle:'The Power of Powers', desc:'From atoms to galaxies, scientific notation lets us write numbers too large or small for ordinary digits. Master exponents and unlock scale.', width:58, height:192},
+  {row:3, color:'#0A2A1A', textColor:'#709080', accentColor:'#286048', title:'The\nPythagorean\nTheoreme', shortTitle:'Pythagorean', grade:'Grade 8', chapters:6, status:'Locked', subtitle:'The Ancient Triangle Secret', desc:'A squared plus B squared equals C squared — the oldest theorem in geometry still holds infinite surprises. This volume reveals them all.', width:64, height:204},
+  {row:3, color:'#2A0A0A', textColor:'#C07070', accentColor:'#803838', title:'Transformations', shortTitle:'Transforms', grade:'Grade 8', chapters:5, status:'Locked', subtitle:'Motion in the Plane', desc:'Reflection, rotation, translation, dilation — shapes can move without changing. Transformations are the geometry of motion.', width:56, height:188},
+  {row:3, color:'#1A1A0A', textColor:'#B0A860', accentColor:'#686028', title:'Statistics\nVolume II', shortTitle:'Statistics II', grade:'Grade 8', chapters:4, status:'Locked', subtitle:'Patterns & Predictions', desc:'Scatter plots, lines of best fit, two-way tables — advanced statistics lets you find patterns and make predictions from messy data.', width:50, height:180},
+];
+
+function makeSVGOrnament(color) {
+  return '<svg width="100%" height="12" viewBox="0 0 40 12" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="6" x2="14" y2="6" stroke="'+color+'" stroke-width="0.8" opacity="0.7"/><circle cx="20" cy="6" r="2.5" fill="none" stroke="'+color+'" stroke-width="0.8" opacity="0.7"/><line x1="26" y1="6" x2="40" y2="6" stroke="'+color+'" stroke-width="0.8" opacity="0.7"/></svg>';
+}
+
+function makeBook(b, idx) {
+  var isLocked = b.status === 'Locked';
+  var spineColor = isLocked ? shadeColor(b.color, -30) : b.color;
+  var tc = isLocked ? 'rgba(180,170,150,0.4)' : b.textColor;
+  var ac = isLocked ? 'rgba(160,150,120,0.35)' : b.accentColor;
+
+  var titleLines = b.title.split('\n');
+  var fontSize = titleLines.length >= 3 ? 8 : titleLines.length === 2 ? 9 : 10;
+
+  var titleSpans = titleLines.map(function(line){
+    return '<tspan x="50%" dy="'+(fontSize+2)+'">' + line + '</tspan>';
+  }).join('');
+
+  var svgH = b.height;
+  var svgW = b.width;
+
+  var svg = '<svg width="'+svgW+'" height="'+svgH+'" viewBox="0 0 '+svgW+' '+svgH+'" xmlns="http://www.w3.org/2000/svg">';
+
+  // Base spine with texture
+  svg += '<rect width="'+svgW+'" height="'+svgH+'" fill="'+spineColor+'" rx="1"/>';
+  // Left shadow edge
+  svg += '<rect x="0" y="0" width="4" height="'+svgH+'" fill="rgba(0,0,0,0.35)"/>';
+  // Right highlight
+  svg += '<rect x="'+(svgW-3)+'" y="0" width="3" height="'+svgH+'" fill="rgba(255,255,255,0.05)"/>';
+  // Top cap
+  svg += '<rect x="0" y="0" width="'+svgW+'" height="6" fill="rgba(255,255,255,0.08)"/>';
+  // Bottom cap
+  svg += '<rect x="0" y="'+(svgH-6)+'" width="'+svgW+'" height="6" fill="rgba(0,0,0,0.2)"/>';
+
+  // Top ornamental band
+  svg += '<rect x="4" y="10" width="'+(svgW-8)+'" height="1" fill="'+ac+'" opacity="0.6"/>';
+  svg += '<rect x="4" y="13" width="'+(svgW-8)+'" height="1" fill="'+ac+'" opacity="0.3"/>';
+
+  // Bottom ornamental band
+  svg += '<rect x="4" y="'+(svgH-14)+'" width="'+(svgW-8)+'" height="1" fill="'+ac+'" opacity="0.6"/>';
+  svg += '<rect x="4" y="'+(svgH-11)+'" width="'+(svgW-8)+'" height="1" fill="'+ac+'" opacity="0.3"/>';
+
+  // Top diamond ornament
+  svg += '<polygon points="'+(svgW/2)+',18 '+(svgW/2-4)+',22 '+(svgW/2)+',26 '+(svgW/2+4)+',22" fill="'+ac+'" opacity="0.55"/>';
+
+  // Bottom diamond ornament
+  svg += '<polygon points="'+(svgW/2)+','+(svgH-26)+' '+(svgW/2-4)+','+(svgH-22)+' '+(svgW/2)+','+(svgH-18)+' '+(svgW/2+4)+','+(svgH-22)+'" fill="'+ac+'" opacity="0.55"/>';
+
+  // Title text (vertical, rotated)
+  var textStartY = 36;
+  var textAreaH = svgH - 72;
+  var midY = textStartY + textAreaH / 2 - (titleLines.length * (fontSize + 2)) / 2;
+
+  svg += '<text font-family="Georgia,serif" font-size="'+fontSize+'" fill="'+tc+'" text-anchor="middle" letter-spacing="0.8">';
+  titleLines.forEach(function(line, i){
+    svg += '<tspan x="'+(svgW/2)+'" y="'+(midY + i*(fontSize+3))+'">' + line + '</tspan>';
+  });
+  svg += '</text>';
+
+  // Locked overlay
+  if(isLocked){
+    svg += '<rect width="'+svgW+'" height="'+svgH+'" fill="rgba(10,14,10,0.42)"/>';
+    svg += '<text x="'+(svgW/2)+'" y="'+(svgH/2+4)+'" font-family="sans-serif" font-size="14" fill="rgba(180,160,120,0.5)" text-anchor="middle">&#128274;</text>';
+  }
+
+  svg += '</svg>';
+
+  var tooltip = '<div class="book-tooltip"><strong>' + b.shortTitle + '</strong>' + b.grade + (isLocked ? ' &mdash; Locked' : '') + '</div>';
+
+  return '<div class="book" style="width:'+svgW+'px" onclick="'+(isLocked?'openLocked()':'openModal('+idx+')')+'">' + svg + tooltip + '</div>';
+}
+
+function shadeColor(color, percent) {
+  var num = parseInt(color.replace('#',''), 16);
+  var r = Math.min(255, Math.max(0, (num >> 16) + percent));
+  var g = Math.min(255, Math.max(0, ((num >> 8) & 0xFF) + percent));
+  var b = Math.min(255, Math.max(0, (num & 0xFF) + percent));
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+// Render books into rows
+[1,2,3].forEach(function(rowNum){
+  var rowEl = document.getElementById('row'+rowNum);
+  var rowBooks = books.filter(function(b){return b.row===rowNum});
+  rowEl.innerHTML = rowBooks.map(function(b, i){
+    var globalIdx = books.indexOf(b);
+    return makeBook(b, globalIdx);
+  }).join('');
+});
+
+function openModal(idx) {
+  var chapterLinks = {
+    0:'chapters/chapter-ratios-1.html',
+    1:'chapters/chapter-ratios-1.html',
+    2:'chapters/chapter-ratios-1.html',
+    3:'chapters/chapter-ratios-1.html',
+    4:'chapters/chapter-ratios-1.html',
+    5:'chapters/chapter-ratios-1.html',
+    6:'chapters/chapter-ratios-1.html',
+    7:'#',8:'#',9:'#',10:'#',11:'#',12:'#',13:'#'
+  };
+  var openBtn = document.getElementById('modal-open-btn');
+  if(openBtn){
+    openBtn.onclick = function(){
+      var url = chapterLinks[idx];
+      if(url && url !== '#'){ window.location.href = url; }
+      else { closeModal(); alert('This chapter is coming soon!'); }
+    };
+  }
+  var b = books[idx];
+  document.getElementById('m-chapter').textContent = b.grade + ' \u00B7 ' + b.shortTitle;
+  document.getElementById('m-title').textContent = b.title.replace(/\n/g,' ');
+  document.getElementById('m-subtitle').textContent = b.subtitle;
+  document.getElementById('m-desc').textContent = b.desc;
+  document.getElementById('m-grade').textContent = b.grade;
+  document.getElementById('m-chapters').textContent = b.chapters + ' chapters';
+  document.getElementById('m-status').textContent = b.status;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function navigateToChapter(idx) {
+  if (idx === 0) {
+    window.location.href = 'chapters/chapter-ratios-1.html';
+  } else {
+    alert('This volume is not yet available. Complete Ratios & Proportions to unlock more books.');
+  }
+}
+
+function openLocked(){
+  alert('This volume is locked. Complete earlier chapters to unlock it.');
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+}
+function handleOverlayClick(e){
+  if(e.target===document.getElementById('overlay')) closeModal();
+}
+</script>
+
+<script>
+  document.body.dataset.sageMode = 'float';
+</script>
+<script src="sage-component.js"></script>
+
+</body>
+</html>

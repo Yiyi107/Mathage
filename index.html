@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathage &#8212; Your Math Village</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600&family=Caveat:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --f:#1C3A1E;--fm:#2D5A2E;--fl:#3D7A40;
+  --m:#5A9A3C;--ml:#7EC355;--mp:#B8DFA0;
+  --sg:#8AAF82;--sgl:#C8DFC0;--sgp:#EBF5E6;
+  --stone:#F5F2EB;--stm:#D1D7DB;--std:#6a6f73;
+  --cream:#FDFAF4;--warm:#F7F1E4;
+  --gold:#C8A84B;--goldl:#E8D090;--goldp:#F7EDD4;
+  --dusk:#2A3D2C;
+  --txt:#1c1d1f;--muted:#6a6f73;--light:#9AA0A6;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --hand:'Caveat',cursive;
+}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--cream);color:var(--txt);overflow-x:hidden}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:62px;background:rgba(253,250,244,0.92);border-bottom:1px solid rgba(138,175,130,0.2);position:sticky;top:0;z-index:200;backdrop-filter:blur(10px)}
+.logo{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--f);letter-spacing:0.2px;display:flex;align-items:center;gap:9px;cursor:pointer}
+.logo-mark{width:26px;height:26px;border-radius:50%;background:var(--f);display:flex;align-items:center;justify-content:center}
+.logo-inner{width:10px;height:10px;border-radius:50%;background:var(--mp)}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-family:var(--sans);font-size:14px;font-weight:400;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--f)}
+.nav-r{display:flex;gap:12px;align-items:center}
+.btn-ghost{background:none;border:1.5px solid var(--stm);border-radius:50px;padding:8px 20px;font-family:var(--sans);font-size:13px;font-weight:400;color:var(--muted);cursor:pointer;transition:all .2s}
+.btn-ghost:hover{border-color:var(--sg);color:var(--f)}
+.btn-enter{background:var(--f);border:none;border-radius:50px;padding:9px 22px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--cream);cursor:pointer;transition:all .2s}
+.btn-enter:hover{background:var(--fm);transform:translateY(-1px)}
+
+.hero{position:relative;overflow:hidden;height:100vh;min-height:620px}
+.hero-scene{position:absolute;inset:0;width:100%;height:100%}
+.hero-scene img{width:100%;height:100%;object-fit:cover;object-position:center center}
+.hero-fade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(210,230,200,0.18) 0%,rgba(180,210,160,0.08) 40%,rgba(60,100,40,0.22) 75%,rgba(28,58,30,0.55) 100%)}
+.hero-top-fade{position:absolute;top:0;left:0;right:0;height:140px;background:linear-gradient(to bottom,rgba(220,235,210,0.35),transparent)}
+.hero-content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;padding-top:40px}
+.hero-badge{display:inline-block;background:rgba(253,250,244,0.88);border:1px solid rgba(209,215,219,0.6);border-radius:4px;padding:6px 18px;font-family:var(--sans);font-size:12px;font-weight:400;color:#3d3d3d;letter-spacing:0.3px;margin-bottom:28px}
+.hero-h1{font-family:var(--serif);font-size:62px;line-height:1.08;font-weight:600;color:#FDFAF4;margin-bottom:20px;letter-spacing:-0.5px;text-shadow:0 2px 24px rgba(20,50,20,0.4)}
+.hero-h1 em{font-style:italic;color:var(--goldl)}
+.hero-p{font-family:var(--sans);font-size:18px;font-weight:300;color:rgba(253,250,244,0.82);line-height:1.65;max-width:460px;margin-bottom:36px}
+.hero-btns{display:flex;gap:14px;align-items:center;justify-content:center}
+.btn-hero-primary{font-family:var(--sans);font-size:15px;font-weight:500;color:var(--txt);background:rgba(253,250,244,0.97);border:none;border-radius:4px;padding:14px 32px;cursor:pointer;transition:all .2s}
+.btn-hero-primary:hover{background:#fff;transform:translateY(-1px)}
+.btn-hero-ghost{font-family:var(--sans);font-size:15px;font-weight:400;color:rgba(253,250,244,0.9);background:none;border:1px solid rgba(253,250,244,0.4);border-radius:4px;padding:13px 28px;cursor:pointer;transition:all .2s}
+.btn-hero-ghost:hover{border-color:rgba(253,250,244,0.7)}
+.hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-family:var(--sans);font-size:11px;font-weight:400;color:rgba(253,250,244,0.45);letter-spacing:0.8px;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-line{width:1px;height:32px;background:rgba(253,250,244,0.22)}
+
+.statsbar{display:flex;justify-content:center;align-items:center;background:var(--cream);border-bottom:1px solid var(--stm);padding:22px 0}
+.stat{text-align:center;padding:0 52px;border-right:1px solid var(--stm)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:var(--serif);font-size:28px;font-weight:600;color:var(--f)}
+.stat-l{font-family:var(--sans);font-size:12px;font-weight:400;color:var(--muted);margin-top:2px}
+
+.section{max-width:1100px;margin:0 auto;padding:88px 52px}
+.eyebrow{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--light);margin-bottom:12px}
+.sec-h2{font-family:var(--serif);font-size:38px;font-weight:600;color:var(--txt);line-height:1.18;margin-bottom:16px}
+.sec-h2 em{font-style:italic;color:var(--fl)}
+.sec-sub{font-family:var(--sans);font-size:16px;font-weight:400;color:var(--muted);line-height:1.7;max-width:520px;margin-bottom:48px}
+
+.village-wrap{background:var(--f)}
+.village-inner{max-width:1100px;margin:0 auto;padding:88px 52px;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.village-inner .eyebrow{color:var(--sg)}
+.village-inner .sec-h2{color:var(--cream)}
+.village-inner .sec-h2 em{color:var(--goldl)}
+.village-inner .sec-sub{color:var(--mp);max-width:440px;margin-bottom:32px}
+.vlist{list-style:none;display:flex;flex-direction:column;gap:16px}
+.vlist li{display:flex;gap:12px;font-family:var(--sans);font-size:15px;font-weight:400;color:var(--sgl);line-height:1.55}
+.vlist li strong{font-weight:600;color:var(--cream)}
+.vdot{width:5px;height:5px;border-radius:50%;background:var(--ml);margin-top:8px;flex-shrink:0}
+.house-mockup{background:rgba(255,255,255,0.07);border-radius:12px;border:1px solid rgba(255,255,255,0.12);padding:28px}
+.hm-label{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--sg);margin-bottom:14px}
+.hm-name{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--cream);margin-bottom:4px}
+.hm-sub{font-family:var(--sans);font-size:12px;font-weight:400;color:var(--mp);margin-bottom:20px}
+.hm-actions{display:flex;flex-direction:column;gap:8px}
+.hm-action{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:all .15s}
+.hma-s{background:rgba(138,175,130,0.14);border-color:rgba(138,175,130,0.22)}
+.hma-b{background:rgba(200,168,75,0.12);border-color:rgba(200,168,75,0.2)}
+.hma-j{background:rgba(90,154,60,0.13);border-color:rgba(90,154,60,0.22)}
+.hma-s:hover{background:rgba(138,175,130,0.25)}
+.hma-b:hover{background:rgba(200,168,75,0.22)}
+.hma-j:hover{background:rgba(90,154,60,0.25)}
+.hma-txt{font-family:var(--sans);font-size:13px;font-weight:400}
+.hma-s .hma-txt{color:var(--sgl)}
+.hma-b .hma-txt{color:var(--goldl)}
+.hma-j .hma-txt{color:var(--mp)}
+.hma-arr{font-size:13px;opacity:.45}
+
+.modes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.mcard{border-radius:12px;padding:28px;border:1.5px solid transparent;cursor:pointer;transition:transform .2s}
+.mcard:hover{transform:translateY(-3px)}
+.mc-s{background:var(--sgp);border-color:var(--sgl)}
+.mc-b{background:var(--goldp);border-color:var(--goldl)}
+.mc-j{background:#EBF2E8;border-color:var(--mp)}
+.mcard-bar{width:32px;height:3px;border-radius:2px;margin-bottom:20px}
+.mc-s .mcard-bar{background:var(--sg)}
+.mc-b .mcard-bar{background:var(--gold)}
+.mc-j .mcard-bar{background:var(--m)}
+.mcard-tag{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:0.7px;text-transform:uppercase;display:inline-block;padding:3px 10px;border-radius:4px;margin-bottom:10px}
+.mc-s .mcard-tag{background:var(--sgl);color:var(--f)}
+.mc-b .mcard-tag{background:var(--goldl);color:#3A2A00}
+.mc-j .mcard-tag{background:var(--mp);color:var(--f)}
+.mcard h3{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:10px;color:var(--txt)}
+.mcard p{font-family:var(--sans);font-size:14px;font-weight:400;line-height:1.65;color:var(--muted);margin-bottom:18px}
+.placeholder-wrap{margin-top:18px;border-radius:8px;overflow:hidden;border:1.5px dashed var(--stm)}
+.placeholder-inner{background:var(--stone);height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.ph-line1{font-family:var(--sans);font-size:13px;font-weight:400;color:var(--muted)}
+.ph-line2{font-family:var(--sans);font-size:12px;font-weight:300;color:var(--light)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chip{font-family:var(--sans);font-size:11px;font-weight:400;padding:3px 10px;border-radius:4px;border:1px solid currentColor}
+.mc-s .chip{color:var(--fl)}
+.mc-b .chip{color:var(--gold)}
+.mc-j .chip{color:var(--m)}
+
+.persist-wrap{background:var(--dusk)}
+.persist-inner{max-width:1100px;margin:0 auto;padding:88px 52px}
+.persist-inner .eyebrow{color:var(--sg)}
+.persist-inner .sec-h2{color:var(--cream)}
+.persist-inner .sec-h2 em{color:var(--goldl)}
+.persist-inner .sec-sub{color:var(--mp);margin-bottom:52px}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.pcard{background:rgba(255,255,255,0.05);border-radius:12px;padding:22px;border:1px solid rgba(255,255,255,0.07)}
+.pcard-mark{width:28px;height:3px;border-radius:2px;margin-bottom:16px}
+.pm1{background:var(--sg)}.pm2{background:var(--gold)}.pm3{background:var(--ml)}.pm4{background:var(--mp)}
+.pcard h4{font-family:var(--sans);font-size:15px;font-weight:600;color:var(--cream);margin-bottom:8px}
+.pcard p{font-family:var(--sans);font-size:13px;font-weight:400;color:var(--sgl);line-height:1.6}
+
+.coach-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.coach-card{background:var(--cream);border-radius:12px;border:1px solid var(--stm);padding:22px;position:relative}
+.attempt-pill{position:absolute;top:-13px;right:16px;background:var(--goldp);border:1.5px solid var(--goldl);border-radius:4px;padding:5px 14px;font-family:var(--sans);font-size:12px;font-weight:600;color:#3A2A00}
+.coach-hdr{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.coach-av{width:36px;height:36px;border-radius:50%;background:var(--sgp);border:1.5px solid var(--sgl);display:flex;align-items:center;justify-content:center}
+.coach-seed{width:12px;height:12px;border-radius:50%;background:var(--fl)}
+.coach-nm{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--txt)}
+.coach-role{font-family:var(--sans);font-size:12px;font-weight:400;color:var(--muted)}
+.coach-speech{background:var(--warm);border-radius:8px;padding:11px 14px;margin-bottom:12px;border:1px solid var(--stm);font-family:var(--serif);font-size:14px;font-weight:400;color:var(--txt);line-height:1.6;font-style:italic}
+.hints{display:flex;flex-direction:column;gap:7px}
+.hint{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid transparent}
+.h1{background:var(--sgp);border-color:var(--sgl)}
+.h2{background:var(--goldp);border-color:var(--goldl)}
+.h3{background:#EBF2E8;border-color:var(--mp)}
+.hlvl{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;flex-shrink:0;margin-top:1px;text-transform:uppercase;letter-spacing:0.4px}
+.h1 .hlvl{background:var(--sgl);color:var(--f)}
+.h2 .hlvl{background:var(--goldl);color:#3A2A00}
+.h3 .hlvl{background:var(--mp);color:var(--f)}
+.hint p{font-family:var(--sans);font-size:12px;font-weight:400;line-height:1.4;color:var(--txt)}
+.coach-desc{font-family:var(--sans);font-size:16px;font-weight:400;color:var(--muted);line-height:1.7;margin-bottom:24px}
+.clist{list-style:none;display:flex;flex-direction:column;gap:12px}
+.clist li{display:flex;align-items:flex-start;gap:10px;font-family:var(--sans);font-size:14px;font-weight:400;color:var(--txt);line-height:1.5}
+.cbar{width:3px;height:16px;border-radius:2px;flex-shrink:0;margin-top:3px}
+
+.curric-wrap{background:var(--warm);border-top:1px solid var(--stm);border-bottom:1px solid var(--stm)}
+.curric-inner{max-width:1100px;margin:0 auto;padding:88px 52px}
+.tgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-top:36px}
+.ttile{background:var(--cream);border-radius:11px;padding:14px 10px;text-align:center;border:1.5px solid var(--stm);transition:all .2s;cursor:pointer}
+.ttile:hover{border-color:var(--fl);transform:translateY(-2px)}
+.ttile.on{background:var(--f);border-color:var(--f)}
+.tdot{width:7px;height:7px;border-radius:50%;background:var(--sgl);margin:0 auto 7px}
+.ttile.on .tdot{background:var(--ml)}
+.tname{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--txt)}
+.ttile.on .tname{color:var(--cream)}
+.tgrade{font-family:var(--sans);font-size:10px;font-weight:300;color:var(--light);margin-top:3px}
+.ttile.on .tgrade{color:var(--sg)}
+
+.cta-wrap{padding:96px 52px;text-align:center;background:var(--cream)}
+.cta-inner{max-width:520px;margin:0 auto}
+.cta-wrap .sec-h2{margin-bottom:14px}
+.cta-wrap .sec-sub{margin:0 auto 36px;text-align:center}
+.cta-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn-cta-p{font-family:var(--sans);font-size:15px;font-weight:500;color:var(--cream);background:var(--f);border:none;border-radius:50px;padding:14px 32px;cursor:pointer;transition:background .2s}
+.btn-cta-p:hover{background:var(--fm)}
+.btn-cta-s{font-family:var(--sans);font-size:15px;font-weight:400;color:var(--muted);background:none;border:1.5px solid var(--stm);border-radius:50px;padding:13px 28px;cursor:pointer;transition:all .2s}
+.btn-cta-s:hover{border-color:var(--sg)}
+.edu-note{font-family:var(--sans);font-size:12px;font-weight:300;color:var(--light);margin-top:20px}
+.edu-note a{color:var(--fl);text-decoration:none;font-weight:400}
+
+footer{background:var(--f);padding:32px 52px;display:flex;justify-content:space-between;align-items:center}
+.foot-logo{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--cream)}
+.foot-links{display:flex;gap:22px}
+.foot-links a{font-family:var(--sans);font-size:12px;font-weight:300;color:var(--sg);text-decoration:none}
+.foot-copy{font-family:var(--sans);font-size:11px;color:var(--sg)}
+
+@media(max-width:860px){
+  nav{padding:0 20px}.nav-links{display:none}
+  .hero-h1{font-size:40px}
+  .village-inner,.coach-grid{grid-template-columns:1fr;gap:40px}
+  .modes-grid{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:1fr 1fr}
+  .tgrid{grid-template-columns:repeat(3,1fr)}
+  .section,.village-inner,.persist-inner,.curric-inner,.cta-wrap{padding:56px 24px}
+  footer{padding:24px 20px;flex-direction:column;gap:14px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <div class="logo-mark"><div class="logo-inner"></div></div>
+    mathage
+  </div>
+  <div class="nav-links">
+    <a href="#">Story</a>
+    <a href="#">Build</a>
+    <a href="#">My Journey</a>
+    <a href="#">For Educators</a>
+  </div>
+  <div class="nav-r">
+    <button class="btn-ghost" onclick="window.location.href='dashboard.html'">Log in</button>
+    <button class="btn-enter" onclick="window.location.href='dashboard.html'">Enter the village</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-scene">
+    <img src="images/hero-bg.png" alt="Mathage village">
+  </div>
+  <div class="hero-fade"></div>
+  <div class="hero-top-fade"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Free to explore &#183; Common Core &#183; Grades 6&#8211;8</div>
+    <h1 class="hero-h1">Welcome to <em>Mathage.</em><br>Your math village.</h1>
+    <p class="hero-p">Build your home, grow your skills, and explore middle school math through stories and real&#8209;life challenges&#8201;&#8212;&#8201;at your own pace.</p>
+    <div class="hero-btns">
+      <button class="btn-hero-primary" onclick="window.location.href='dashboard.html'">Move into the village &#8594;</button>
+      <button class="btn-hero-ghost" onclick="document.querySelector('.statsbar').scrollIntoView({behavior:'smooth'})">See how it works</button>
+    </div>
+  </div>
+  
+
+
+  <div class="hero-scroll"><div class="scroll-line"></div>scroll</div>
+</section>
+
+<div class="statsbar">
+  <div class="stat"><div class="stat-n">42</div><div class="stat-l">Story chapters</div></div>
+  <div class="stat"><div class="stat-n">6&#8211;8</div><div class="stat-l">Grade levels</div></div>
+  <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Common Core aligned</div></div>
+  <div class="stat"><div class="stat-n">Free</div><div class="stat-l">To get started</div></div>
+</div>
+
+<div class="village-wrap">
+  <div class="village-inner">
+    <div>
+      <div class="eyebrow">Your math village</div>
+      <h2 class="sec-h2">Every student gets<br>their own <em>math house.</em></h2>
+      <p class="sec-sub">Mathage is a living village. Move in, set up your space, and decide what to explore next&#8201;&#8212;&#8201;just like Animal Crossing, but your neighbors are fractions, geometry, and algebra.</p>
+      <ul class="vlist">
+        <li><div class="vdot"></div><div><strong>Your house, your choices.</strong> Explore a story chapter, take on a build challenge, or check your progress&#8201;&#8212;&#8201;all from your own home base.</div></li>
+        <li><div class="vdot"></div><div><strong>Math memories live here.</strong> Every problem you solve and every breakthrough is collected and displayed in your space.</div></li>
+        <li><div class="vdot"></div><div><strong>Community coming soon.</strong> Visit classmates&#8217; houses and collaborate on build challenges.</div></li>
+      </ul>
+    </div>
+    <div>
+      <div class="house-mockup">
+        <div class="hm-label">Your math house</div>
+        <div class="hm-name">Alex&#8217;s Place</div>
+        <div class="hm-sub">Grade 7 &#183; 12 chapters explored</div>
+        <div class="hm-actions">
+          <div class="hm-action hma-s" onclick="window.location.href='story.html'"><span class="hma-txt">Explore a story chapter</span><span class="hma-arr">&#8594;</span></div>
+          <div class="hm-action hma-b" onclick="window.location.href='build.html'"><span class="hma-txt">Take on a build challenge</span><span class="hma-arr">&#8594;</span></div>
+          <div class="hm-action hma-j" onclick="window.location.href='journey.html'"><span class="hma-txt">See my journey</span><span class="hma-arr">&#8594;</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="eyebrow">Three paths to explore</div>
+  <h2 class="sec-h2">Choose your adventure <em>for today</em></h2>
+  <div class="modes-grid">
+    <div class="mcard mc-s" onclick="window.location.href='story.html'">
+      <div class="mcard-bar"></div>
+      <span class="mcard-tag">Story Mode</span>
+      <h3>Follow the story</h3>
+      <p>Chaptered narratives built around real math themes. Questions are woven into the story&#8201;&#8212;&#8201;hints appear when you need them.</p>
+      <div class="placeholder-wrap"><div class="placeholder-inner"><div class="ph-line1">Game screenshot &#8212; coming soon</div><div class="ph-line2">Story Mode &#183; Chapter view</div></div></div>
+      <div class="chips"><span class="chip">Scaffolded hints</span><span class="chip">Narrative&#8209;driven</span><span class="chip">CC aligned</span></div>
+    </div>
+    <div class="mcard mc-b" onclick="window.location.href='build.html'">
+      <div class="mcard-bar"></div>
+      <span class="mcard-tag">Build Mode</span>
+      <h3>Build something real</h3>
+      <p>Plan a road trip, design a bedroom, budget a shopping run. Apply math to tasks that actually matter.</p>
+      <div class="placeholder-wrap"><div class="placeholder-inner"><div class="ph-line1">Game screenshot &#8212; coming soon</div><div class="ph-line2">Build Mode &#183; Task view</div></div></div>
+      <div class="chips"><span class="chip">Real&#8209;life tasks</span><span class="chip">Project&#8209;based</span><span class="chip">Completion goals</span></div>
+    </div>
+    <div class="mcard mc-j" onclick="window.location.href='journey.html'">
+      <div class="mcard-bar"></div>
+      <span class="mcard-tag">My Journey</span>
+      <h3>Watch yourself grow</h3>
+      <p>Every attempt, every milestone, every recovery from a wrong answer&#8201;&#8212;&#8201;tracked and celebrated.</p>
+      <div class="placeholder-wrap"><div class="placeholder-inner"><div class="ph-line1">Game screenshot &#8212; coming soon</div><div class="ph-line2">Journey &#183; Progress map</div></div></div>
+      <div class="chips"><span class="chip">Progress map</span><span class="chip">Math memories</span><span class="chip">Effort badges</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="persist-wrap">
+  <div class="persist-inner">
+    <div class="eyebrow">Built for real learners</div>
+    <h2 class="sec-h2">Persistence <em>is the point.</em></h2>
+    <p class="sec-sub">We don&#8217;t just measure right answers. Mathage tracks how hard you try, how you recover, and how your thinking deepens over time.</p>
+    <div class="pgrid">
+      <div class="pcard"><div class="pcard-mark pm1"></div><h4>Effort tracking</h4><p>Every attempt counts&#8201;&#8212;&#8201;not just the correct one.</p></div>
+      <div class="pcard"><div class="pcard-mark pm2"></div><h4>Recovery signals</h4><p>Bouncing back from a wrong answer shows resilience.</p></div>
+      <div class="pcard"><div class="pcard-mark pm3"></div><h4>Cognitive depth</h4><p>Response patterns reveal engagement depth beyond a score.</p></div>
+      <div class="pcard"><div class="pcard-mark pm4"></div><h4>Growth milestones</h4><p>Celebrate moments that show real learning, not just performance.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="coach-grid">
+    <div style="position:relative">
+      <div class="attempt-pill">Attempt 3 &#183; Proportions</div>
+      <div class="coach-card">
+        <div class="coach-hdr">
+          <div class="coach-av"><div class="coach-seed"></div></div>
+          <div><div class="coach-nm">Sage &#8212; your AI coach</div><div class="coach-role">Appears only at specific moments</div></div>
+        </div>
+        <div class="coach-speech">&#8220;You&#8217;ve tried this twice &#8212; that&#8217;s persistence. Let me offer a few different ways to look at it.&#8221;</div>
+        <div class="hints">
+          <div class="hint h1"><span class="hlvl">Hint 1</span><p>What does &#8220;per&#8221; mean here? What two things are being compared?</p></div>
+          <div class="hint h2"><span class="hlvl">Hint 2</span><p>Draw a table: one column for batches, one for cups.</p></div>
+          <div class="hint h3"><span class="hlvl">Hint 3</span><p>Try multiplying &#190; &#215; 2&#189;. Convert the mixed number first.</p></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="eyebrow">AI Coach &#183; Sage</div>
+      <h2 class="sec-h2">Help that shows up at the <em>right moment</em></h2>
+      <p class="coach-desc">Sage isn&#8217;t always on. It appears after specific attempts and offers layered hints&#8201;&#8212;&#8201;without ever handing over the answer.</p>
+      <ul class="clist">
+        <li><div class="cbar" style="background:var(--sg)"></div>Knows the current task and your attempt count</li>
+        <li><div class="cbar" style="background:var(--gold)"></div>Offers 3 levels of help &#8212; nudge to scaffold</li>
+        <li><div class="cbar" style="background:var(--ml)"></div>Never reveals the answer &#8212; builds your thinking</li>
+        <li><div class="cbar" style="background:var(--mp)"></div>Designed to fade as you grow stronger</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="curric-wrap">
+  <div class="curric-inner">
+    <div class="eyebrow">Common Core &#183; Grades 6&#8211;8</div>
+    <h2 class="sec-h2">Every topic, <em>properly scaffolded</em></h2>
+    <div class="tgrid">
+      <div class="ttile on"><div class="tdot"></div><div class="tname">Ratios</div><div class="tgrade">Grade 6</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Integers</div><div class="tgrade">Grade 6</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Geometry</div><div class="tgrade">Gr. 6&#8211;7</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Expressions</div><div class="tgrade">Gr. 6&#8211;7</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Statistics</div><div class="tgrade">Gr. 6&#8211;7</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Proportions</div><div class="tgrade">Grade 7</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Percent</div><div class="tgrade">Grade 7</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Triangles</div><div class="tgrade">Gr. 7&#8211;8</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Functions</div><div class="tgrade">Grade 8</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Algebra</div><div class="tgrade">Gr. 7&#8211;8</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Pythagorean</div><div class="tgrade">Grade 8</div></div>
+      <div class="ttile"><div class="tdot"></div><div class="tname">Transformations</div><div class="tgrade">Grade 8</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-wrap">
+  <div class="cta-inner">
+    <div class="eyebrow">Ready to begin?</div>
+    <h2 class="sec-h2">Start where <em>you are.</em></h2>
+    <p class="sec-sub">No pressure, no timer, no judgment. Just you, a story, and the math waiting to grow.</p>
+    <div class="cta-btns">
+      <button class="btn-cta-p" onclick="window.location.href='dashboard.html'">Move into Mathage &#8594;</button>
+      <button class="btn-cta-s">I&#8217;m an educator</button>
+    </div>
+    <p class="edu-note">Bringing Mathage to your school? <a href="#">Let&#8217;s talk &#8594;</a></p>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-logo">mathage</div>
+  <div class="foot-links"><a href="#">About</a><a href="#">Curriculum</a><a href="#">For Schools</a><a href="#">Privacy</a></div>
+  <div class="foot-copy">&#169; 2025 Mathage</div>
+</footer>
+
+</body>
+</html>

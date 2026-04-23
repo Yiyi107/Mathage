@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathage — Your Room</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&family=Caveat:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --f:#1C3A1E;--fl:#3D7A40;
+  --cream:#FDFAF4;
+  --gold:#C8A84B;--goldl:#E8D090;--goldp:#F7EDD4;
+  --txt:#1c1d1f;--muted:#6a6f73;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --hand:'Caveat',cursive;
+}
+html,body{height:100%;margin:0;padding:0;overflow:hidden}
+body{font-family:var(--sans);background:#2A3D2C;display:flex;flex-direction:column;height:100vh}
+
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:52px;flex-shrink:0;
+  background:rgba(253,250,244,0.94);
+  border-bottom:1px solid rgba(200,185,150,0.4);
+  z-index:10;position:relative;
+}
+.nav-logo{
+  font-family:var(--serif);font-size:18px;font-weight:600;
+  color:var(--f);display:flex;align-items:center;gap:8px;text-decoration:none;
+}
+.logo-dot{width:22px;height:22px;border-radius:50%;background:var(--f);display:flex;align-items:center;justify-content:center}
+.logo-seed{width:8px;height:8px;border-radius:50%;background:#B8DFA0}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-user{font-family:var(--sans);font-size:13px;font-weight:400;color:var(--muted)}
+.nav-streak{
+  display:flex;align-items:center;gap:6px;
+  background:var(--goldp);border-radius:50px;
+  padding:4px 14px;border:1px solid var(--goldl);
+}
+.streak-num{font-family:var(--serif);font-size:14px;font-weight:600;color:#3A2A00}
+.streak-lbl{font-family:var(--sans);font-size:11px;color:#6A5010}
+
+.main{
+  flex:1;display:flex;align-items:stretch;
+  overflow:hidden;height:calc(100vh - 52px);
+}
+
+.left-panel{
+  flex-shrink:0;width:220px;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 0 0 40px;
+  pointer-events:none;z-index:2;
+}
+.left-line1{
+  font-family:var(--hand);font-size:38px;font-weight:400;
+  color:rgba(247,237,180,0.88);line-height:1.35;margin-bottom:18px;
+  text-shadow:0 2px 16px rgba(180,140,40,0.2);
+}
+.left-line2{
+  font-family:var(--hand);font-size:20px;font-weight:400;
+  color:rgba(247,237,180,0.55);line-height:1.55;margin-bottom:48px;
+}
+.left-line3{
+  font-family:var(--hand);font-size:17px;font-weight:400;
+  color:rgba(247,237,180,0.30);letter-spacing:0.3px;
+}
+
+.room-wrap{
+  flex:1;position:relative;overflow:hidden;
+}
+.room-wrap img{
+  display:block;width:100%;height:100%;
+  object-fit:cover;object-position:center center;
+}
+
+.hotspot{
+  position:absolute;cursor:pointer;border-radius:8px;
+  transition:box-shadow 0.25s ease, background 0.25s ease;
+  background:transparent;
+}
+.hotspot:hover{
+  box-shadow:0 0 0 3px rgba(212,185,100,0.55), 0 0 40px 16px rgba(212,185,100,0.2);
+  background:rgba(212,185,100,0.07);
+}
+
+.hs-photos   {top:5%;  left:22%; width:22%; height:38%}
+.hs-desk     {top:55%; left:0%;  width:38%; height:45%}
+.hs-bookshelf{top:45%; left:55%; width:38%; height:50%}
+
+.label-tag{
+  position:absolute;
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  padding:4px 10px;border-radius:50px;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.2s;white-space:nowrap;
+  background:rgba(30,20,8,0.82);color:#F7EDD4;
+  z-index:5;
+}
+.hs-photos:hover    + .lbl-photos   {opacity:1}
+.hs-desk:hover      + .lbl-desk     {opacity:1}
+.hs-bookshelf:hover + .lbl-bookshelf{opacity:1}
+
+.lbl-photos   {top:42%; left:22%}
+.lbl-desk     {top:55%; left:1%}
+.lbl-bookshelf{top:44%; left:56%}
+
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(20,30,20,0.6);
+  align-items:center;justify-content:center;z-index:100;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--cream);border-radius:14px;
+  border:1.5px solid rgba(200,185,150,0.5);
+  padding:32px 36px;max-width:360px;width:90%;
+  position:relative;text-align:center;
+  box-shadow:0 16px 48px rgba(0,0,0,0.3);
+}
+.modal-bar{width:40px;height:4px;border-radius:2px;margin:0 auto 20px}
+.modal-sub{
+  display:inline-block;
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  letter-spacing:0.8px;text-transform:uppercase;
+  padding:3px 12px;border-radius:50px;margin-bottom:14px;
+}
+.modal h3{
+  font-family:var(--serif);font-size:22px;font-weight:600;
+  color:var(--txt);margin-bottom:10px;
+}
+.modal p{
+  font-family:var(--sans);font-size:14px;font-weight:400;
+  color:var(--muted);line-height:1.65;margin-bottom:24px;
+}
+.modal-btn{
+  font-family:var(--sans);font-size:14px;font-weight:600;
+  color:var(--cream);border:none;border-radius:6px;
+  padding:11px 28px;cursor:pointer;width:100%;transition:opacity .15s;
+}
+.modal-btn:hover{opacity:.88}
+.modal-close{
+  position:absolute;top:14px;right:16px;
+  font-family:var(--sans);font-size:20px;font-weight:300;
+  color:var(--muted);background:none;border:none;cursor:pointer;line-height:1;
+}
+.modal-close:hover{color:var(--txt)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor:pointer">
+    <div class="logo-dot"><div class="logo-seed"></div></div>
+    mathage
+  </div>
+  <div class="nav-right">
+    <span class="nav-user">Alex&#8217;s Place &nbsp;&#183;&nbsp; Grade 7</span>
+    <div class="nav-streak">
+      <span class="streak-num">7</span>
+      <span class="streak-lbl">day streak</span>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+
+  <div class="left-panel">
+    <p class="left-line1">Welcome to<br>your room.</p>
+    <p class="left-line2">Ready to begin your<br>math magic<br>journey here?</p>
+    <p class="left-line3">move to explore &#8594;</p>
+  </div>
+
+  <div class="room-wrap">
+    <img src="images/room.png" alt="Alex's math house" draggable="false">
+
+    <div class="hotspot hs-photos" onclick="window.location.href='journey.html'"></div>
+    <div class="label-tag lbl-photos">Photo wall &#8212; My Journey</div>
+
+    <div class="hotspot hs-desk" onclick="window.location.href='build.html'"></div>
+    <div class="label-tag lbl-desk">Desk &#8212; Build Mode</div>
+
+    <div class="hotspot hs-bookshelf" onclick="window.location.href='story.html'"></div>
+    <div class="label-tag lbl-bookshelf">Bookshelf &#8212; Story Mode</div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">&#215;</button>
+    <div class="modal-bar" id="modal-bar"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <h3 id="modal-title"></h3>
+    <p id="modal-desc"></p>
+    <button class="modal-btn" id="modal-btn"></button>
+  </div>
+</div>
+
+<script>
+var data = {
+  story: {
+    bar:'#5A8A3C', sub:'Story Mode', subBg:'#EBF5E6', subColor:'#2A5A14',
+    title:'Bookshelf',
+    desc:'Your collection of math stories lives here. Each chapter is a new adventure &#8212; follow the narrative, answer questions woven into the plot, and unlock the next part of the tale.',
+    btn:'Continue reading &#8594;', btnBg:'#3D7A40'
+  },
+  build: {
+    bar:'#C8A84B', sub:'Build Mode', subBg:'#F7EDD4', subColor:'#5A3A00',
+    title:'Computer Desk',
+    desc:'Real tasks, real math. Plan a road trip, budget a shopping haul, design a room layout &#8212; use what you know to build something you&#8217;re proud of.',
+    btn:'Open a challenge &#8594;', btnBg:'#8A6820'
+  },
+  journey: {
+    bar:'#7EB8D4', sub:'My Journey', subBg:'#D4EEF8', subColor:'#1A5878',
+    title:'Photo Wall',
+    desc:'Every problem solved, every streak kept, every moment you pushed through and figured it out &#8212; pinned here. This is how you became a math person.',
+    btn:'See my journey &#8594;', btnBg:'#2A6888'
+  }
+};
+
+function openModal(type) {
+  var d = data[type];
+  document.getElementById('modal-bar').style.background = d.bar;
+  var sub = document.getElementById('modal-sub');
+  sub.textContent = d.sub;
+  sub.style.background = d.subBg;
+  sub.style.color = d.subColor;
+  document.getElementById('modal-title').innerHTML = d.title;
+  document.getElementById('modal-desc').innerHTML = d.desc;
+  var btn = document.getElementById('modal-btn');
+  btn.innerHTML = d.btn;
+  btn.style.background = d.btnBg;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+}
+</script>
+
+
+
+<script>
+  document.body.dataset.sageMode = 'dashboard-center';
+</script>
+<script src="sage-component.js"></script>
+</body>
+</html>
