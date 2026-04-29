@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathage &#8212; Shopping List Task</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Source+Sans+3:wght@300;400;600&family=Caveat:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1A1208;
+  --parch:#F5E8C8;--parch2:#EDD8A8;--parch3:#E0C888;--parch4:#D4B870;
+  --ink:#2A1A08;--ink2:#4A3018;--ink3:#6A4828;--ink4:#8A6040;
+  --gold:#C8A84B;--goldl:#E8D090;--goldp:#F7EDD4;
+  --sage:#5A8A3C;--sagel:#8ABF60;--sagep:#C8DFB0;
+  --red:#B84030;--redl:#E87060;--redp:#FAE0D8;
+  --blue:#3A70B8;--bluel:#70A8E0;--bluep:#D8EAF8;
+  --panel:rgba(26,18,8,0.82);--panel2:rgba(36,24,10,0.88);
+  --txti:rgba(253,250,244,0.92);--txtm:rgba(253,250,244,0.52);
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --hand:'Caveat',cursive;
+}
+html,body{height:100%;margin:0;padding:0;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg);display:flex;flex-direction:column;height:100vh;color:var(--txti)}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px;flex-shrink:0;background:rgba(253,250,244,0.94);border-bottom:1px solid rgba(200,185,150,0.4);z-index:50}
+.nav-logo{font-family:var(--serif);font-size:17px;font-weight:600;color:#1C3A1E;display:flex;align-items:center;gap:7px;text-decoration:none}
+.logo-dot{width:20px;height:20px;border-radius:50%;background:#1C3A1E;display:flex;align-items:center;justify-content:center}
+.logo-seed{width:7px;height:7px;border-radius:50%;background:#B8DFA0}
+.nav-mid{font-family:var(--sans);font-size:13px;color:#6a6f73;display:flex;align-items:center;gap:4px}
+.nav-sep{color:#C8C0B0;margin:0 3px}
+.nav-active{color:#1C3A1E;font-weight:600}
+.nav-right{display:flex;gap:10px}
+.nav-btn{font-family:var(--sans);font-size:12px;color:#6a6f73;background:rgba(0,0,0,0.05);border:1px solid rgba(0,0,0,0.1);border-radius:20px;padding:4px 12px;cursor:pointer;transition:all .2s}
+.nav-btn:hover{background:rgba(0,0,0,0.08)}
+
+/* ── INTRO SCREEN ── */
+.intro-screen{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);position:relative;overflow:hidden;
+}
+.intro-bg{position:absolute;inset:0}
+.intro-bg img{width:100%;height:100%;object-fit:cover;opacity:.7}
+.intro-bg-ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,18,8,.1) 0%,rgba(26,18,8,.55) 70%,rgba(26,18,8,.92) 100%)}
+.intro-card{
+  position:relative;z-index:5;
+  background:var(--panel2);border:1px solid rgba(200,168,75,0.2);
+  border-radius:16px;padding:32px 36px;max-width:520px;width:90%;
+  backdrop-filter:blur(16px);text-align:center;
+}
+.intro-eyebrow{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(200,168,75,.45);margin-bottom:10px}
+.intro-title{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--goldl);margin-bottom:6px}
+.intro-sub{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--txtm);margin-bottom:18px;line-height:1.5}
+.intro-divider{width:48px;height:1px;background:rgba(200,168,75,.22);margin:0 auto 18px}
+.intro-sage{
+  background:rgba(255,255,255,.04);border-radius:12px;
+  padding:14px 16px;margin-bottom:22px;
+  border:1px solid rgba(168,212,168,.15);text-align:left;
+}
+.intro-sage-spk{font-family:var(--serif);font-size:11px;font-style:italic;font-weight:600;color:rgba(168,212,168,.6);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.intro-sage-dot{width:5px;height:5px;border-radius:50%;background:#5A8A3C}
+.intro-sage-txt{font-family:var(--serif);font-size:14px;color:var(--txti);line-height:1.65}
+.intro-meta{display:flex;gap:14px;justify-content:center;margin-bottom:22px;flex-wrap:wrap}
+.intro-meta-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 14px;text-align:center}
+.meta-lbl{font-family:var(--sans);font-size:9px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--txtm);margin-bottom:3px}
+.meta-val{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--goldl)}
+.intro-btn{font-family:var(--serif);font-size:16px;font-weight:600;font-style:italic;color:var(--parch);background:#3A5A20;border:none;border-radius:8px;padding:13px 32px;cursor:pointer;width:100%;transition:all .2s}
+.intro-btn:hover{background:#2A4A14;transform:translateY(-1px)}
+
+/* ── TASK SCREEN ── */
+.task-screen{display:none;flex:1;overflow:hidden}
+.task-screen.active{display:flex;flex-direction:column}
+.task-layout{flex:1;display:grid;grid-template-columns:220px 1fr 260px;overflow:hidden;gap:0}
+
+/* LEFT — needs */
+.panel-left{
+  background:rgba(245,232,200,.07);
+  border-right:1px solid rgba(200,168,75,.12);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.panel-hdr{
+  padding:14px 16px 10px;
+  border-bottom:1px solid rgba(200,168,75,.1);
+  font-family:var(--hand);font-size:16px;color:var(--goldl);
+  display:flex;align-items:center;gap:6px;
+}
+.panel-hdr svg{opacity:.6}
+.need-list{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.need-item{
+  background:rgba(245,232,200,.06);border-radius:8px;
+  padding:11px 13px;border:1px solid rgba(200,168,75,.1);
+}
+.need-name{font-family:var(--hand);font-size:15px;color:var(--goldl);margin-bottom:3px}
+.need-hint{font-family:var(--sans);font-size:11px;color:var(--txtm);line-height:1.4}
+.need-fill{margin-top:8px}
+.need-fill-lbl{font-family:var(--sans);font-size:10px;color:var(--txtm);margin-bottom:4px;display:flex;justify-content:space-between}
+.need-track{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.need-bar{height:100%;border-radius:3px;transition:width .4s ease,background .4s}
+
+/* CENTER — market */
+.panel-center{
+  overflow-y:auto;padding:16px 18px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.market-section-title{
+  font-family:var(--hand);font-size:14px;color:rgba(200,168,75,.45);
+  letter-spacing:.5px;margin-bottom:2px;display:flex;align-items:center;gap:6px;
+}
+.vendor-block{
+  background:rgba(245,232,200,.06);border-radius:10px;
+  border:1px solid rgba(200,168,75,.1);overflow:hidden;
+}
+.vendor-hdr{
+  padding:10px 14px;background:rgba(200,168,75,.07);
+  border-bottom:1px solid rgba(200,168,75,.08);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.vendor-name{font-family:var(--hand);font-size:15px;color:var(--goldl)}
+.vendor-tag{font-family:var(--sans);font-size:10px;font-weight:600;padding:2px 8px;border-radius:50px;letter-spacing:.4px}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1px;background:rgba(200,168,75,.06)}
+.item-card{
+  background:rgba(26,18,8,.6);padding:12px;cursor:pointer;
+  transition:background .15s;position:relative;
+}
+.item-card:hover{background:rgba(200,168,75,.08)}
+.item-cat{font-family:var(--sans);font-size:9px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txtm);margin-bottom:5px}
+.item-name{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--txti);margin-bottom:2px}
+.item-pack{font-family:var(--sans);font-size:11px;color:var(--txtm);margin-bottom:6px}
+.item-price-row{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+.item-price{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--goldl)}
+.item-orig{font-family:var(--sans);font-size:11px;color:var(--txtm);text-decoration:line-through}
+.item-discount{font-family:var(--sans);font-size:10px;font-weight:600;color:#8ABF60;background:rgba(90,138,60,.15);border-radius:50px;padding:1px 6px}
+.item-controls{display:flex;align-items:center;gap:6px}
+.qty-btn{width:24px;height:24px;border-radius:50%;border:1px solid rgba(200,168,75,.25);background:rgba(200,168,75,.08);color:var(--goldl);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:var(--sans);font-weight:600;line-height:1}
+.qty-btn:hover{background:rgba(200,168,75,.2);border-color:rgba(200,168,75,.5)}
+.qty-num{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--txti);min-width:20px;text-align:center}
+.item-subtotal{font-family:var(--sans);font-size:10px;color:rgba(200,168,75,.5);margin-left:auto}
+
+/* RIGHT — feedback */
+.panel-right{
+  border-left:1px solid rgba(200,168,75,.1);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.budget-block{padding:14px 16px;border-bottom:1px solid rgba(200,168,75,.1)}
+.budget-title{font-family:var(--hand);font-size:15px;color:var(--goldl);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.budget-nums{display:flex;justify-content:space-between;margin-bottom:6px;font-family:var(--serif);font-size:12px;color:var(--txtm)}
+.budget-track{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.budget-fill{height:100%;border-radius:4px;transition:width .4s ease,background .4s}
+.budget-remaining{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--goldl);text-align:center;margin-bottom:2px}
+.budget-remaining-lbl{font-family:var(--sans);font-size:10px;color:var(--txtm);text-align:center}
+
+.inventory-block{padding:12px 16px;border-bottom:1px solid rgba(200,168,75,.1);flex-shrink:0}
+.inv-title{font-family:var(--hand);font-size:14px;color:var(--goldl);margin-bottom:10px}
+.inv-row{margin-bottom:8px}
+.inv-row-top{display:flex;justify-content:space-between;margin-bottom:4px}
+.inv-lbl{font-family:var(--sans);font-size:11px;color:var(--txtm)}
+.inv-val{font-family:var(--serif);font-size:11px;font-weight:600;color:var(--txti)}
+.inv-track{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.inv-bar{height:100%;border-radius:3px;transition:width .4s,background .4s}
+
+.sage-feedback{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.sage-msg{
+  background:rgba(90,138,60,.1);border:1px solid rgba(90,138,60,.2);
+  border-radius:10px;padding:10px 12px;
+  font-family:var(--serif);font-size:12px;font-style:italic;
+  color:rgba(168,212,168,.85);line-height:1.55;
+  animation:slideIn .3s ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+.sage-msg-time{font-family:var(--sans);font-size:9px;color:rgba(168,212,168,.35);margin-top:4px}
+
+.submit-block{padding:12px 16px;border-top:1px solid rgba(200,168,75,.1)}
+.submit-eval{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;min-height:28px;
+}
+.eval-badge{
+  font-family:var(--sans);font-size:10px;font-weight:600;
+  padding:3px 10px;border-radius:50px;letter-spacing:.3px;
+  border:1px solid currentColor;transition:all .3s;
+}
+.submit-btn{
+  width:100%;font-family:var(--hand);font-size:17px;font-weight:600;
+  border:none;border-radius:8px;padding:11px;cursor:pointer;
+  transition:all .2s;color:var(--parch);
+}
+.submit-btn:disabled{background:rgba(255,255,255,.08);color:var(--txtm);cursor:not-allowed}
+.submit-btn.ready{background:var(--sage);color:var(--parch)}
+.submit-btn.ready:hover{background:#4A7A2C}
+.submit-btn.over{background:rgba(184,64,48,.6);color:var(--txti)}
+
+/* result overlay */
+.result-ov{display:none;position:fixed;inset:0;background:rgba(10,8,4,.7);align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(5px)}
+.result-ov.open{display:flex}
+.result-card{
+  background:var(--parch);border-radius:8px;
+  border:2px solid var(--parch3);max-width:480px;width:92%;
+  box-shadow:0 24px 60px rgba(0,0,0,.5);overflow:hidden;
+}
+.result-top{height:5px;background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 8px,#8A6020 8px,#8A6020 16px)}
+.result-body{padding:28px 30px}
+.result-ornament{text-align:center;font-size:18px;color:var(--parch4);letter-spacing:4px;margin-bottom:8px;opacity:.6}
+.result-title{font-family:var(--hand);font-size:26px;font-weight:600;color:var(--ink);text-align:center;margin-bottom:6px}
+.result-sub{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--ink2);text-align:center;margin-bottom:18px;line-height:1.5}
+.result-divider{border:none;border-top:1px dashed var(--parch3);margin:0 0 16px}
+.result-evals{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.result-eval{text-align:center;padding:10px 14px;border-radius:8px;border:1px solid transparent}
+.re-icon{font-size:18px;margin-bottom:4px}
+.re-lbl{font-family:var(--sans);font-size:11px;font-weight:600}
+.result-sage{
+  background:rgba(90,138,60,.08);border:1px solid rgba(90,138,60,.18);
+  border-radius:8px;padding:12px 14px;margin-bottom:18px;
+}
+.result-sage-txt{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--ink2);line-height:1.6}
+.result-summary{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.rs-item{flex:1;min-width:80px;background:rgba(200,168,75,.08);border-radius:6px;padding:8px;text-align:center;border:1px solid rgba(200,168,75,.15)}
+.rs-val{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink)}
+.rs-lbl{font-family:var(--sans);font-size:10px;color:var(--ink3);margin-top:2px}
+.result-btns{display:flex;flex-direction:column;gap:7px}
+.result-btn{font-family:var(--hand);font-size:16px;font-weight:600;border:none;border-radius:6px;padding:11px;cursor:pointer;transition:all .2s}
+.result-btn.p{background:#3A5A20;color:var(--parch)}.result-btn.p:hover{background:#2A4A14}
+.result-btn.s{background:rgba(42,26,8,.08);color:var(--ink2);border:1px dashed var(--parch3)}.result-btn.s:hover{background:rgba(42,26,8,.14)}
+.result-top-bot{height:5px;background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 8px,#8A6020 8px,#8A6020 16px)}
+
+.fade-in{animation:fi .45s ease forwards}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor:pointer"><img src="images/logo.png" alt="Mathage" style="height:36px;width:auto;display:block;object-fit:contain;">
+  </div>
+  <div class="nav-mid">
+    <span style="cursor:pointer" onclick="window.location.href='build.html'">Build Mode</span><span class="nav-sep">&#8250;</span>
+    <span class="nav-active">Shopping List</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="saveProgress()">Save</button>
+    <button class="nav-btn" onclick="window.location.href='build.html'">Exit task</button>
+  </div>
+</nav>
+
+<!-- INTRO SCREEN -->
+<div class="intro-screen" id="intro">
+  <div class="intro-bg">
+    <img src="images/build-bg.png" alt="market">
+    <div class="intro-bg-ov"></div>
+  </div>
+  <div class="intro-card fade-in">
+    <div class="intro-eyebrow">Build Mode &#183; Task 01</div>
+    <div class="intro-title">Help with the Shopping List</div>
+    <div class="intro-sub">A task from the village market</div>
+    <div class="intro-divider"></div>
+    <div class="intro-sage">
+      <div class="intro-sage-spk"><div class="intro-sage-dot"></div>Sage</div>
+      <div class="intro-sage-txt">The village market needs restocking before the festival.<br><br>You decide what to buy, how much, and from whom.<br><br>Just remember&#8230; the budget is limited.</div>
+    </div>
+    <div class="intro-meta">
+      <div class="intro-meta-item"><div class="meta-lbl">Budget</div><div class="meta-val">50 coins</div></div>
+      <div class="intro-meta-item"><div class="meta-lbl">Vendors</div><div class="meta-val">3 vendors</div></div>
+      <div class="intro-meta-item"><div class="meta-lbl">No single answer</div><div class="meta-val">Your call</div></div>
+    </div>
+    <button class="intro-btn" onclick="startTask()">Begin the task &#8594;</button>
+  </div>
+</div>
+
+<!-- TASK SCREEN -->
+<div class="task-screen" id="task">
+  <div class="task-layout">
+
+    <!-- LEFT: needs -->
+    <div class="panel-left">
+      <div class="panel-hdr">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/><line x1="4" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="1"/><line x1="4" y1="7.5" x2="9" y2="7.5" stroke="currentColor" stroke-width="1"/><line x1="4" y1="10" x2="8" y2="10" stroke="currentColor" stroke-width="1"/></svg>
+        What&#8217;s needed
+      </div>
+      <div class="need-list">
+        <div class="need-item">
+          <div class="need-name">Flour</div>
+          <div class="need-hint">Needed for baking. The kitchen said &#8220;enough for the whole festival.&#8221;</div>
+          <div class="need-fill">
+            <div class="need-fill-lbl"><span>Amount</span><span id="flour-kg">0 kg</span></div>
+            <div class="need-track"><div class="need-bar" id="flour-bar" style="width:0%;background:var(--goldl)"></div></div>
+          </div>
+        </div>
+        <div class="need-item">
+          <div class="need-name">Fruit</div>
+          <div class="need-hint">For drinks and desserts. &#8220;A good variety would be nice.&#8221;</div>
+          <div class="need-fill">
+            <div class="need-fill-lbl"><span>Amount</span><span id="fruit-kg">0 kg</span></div>
+            <div class="need-track"><div class="need-bar" id="fruit-bar" style="width:0%;background:#E87060"></div></div>
+          </div>
+        </div>
+        <div class="need-item">
+          <div class="need-name">Oil</div>
+          <div class="need-hint">For cooking. &#8220;We usually go through at least a few bottles.&#8221;</div>
+          <div class="need-fill">
+            <div class="need-fill-lbl"><span>Amount</span><span id="oil-l">0 L</span></div>
+            <div class="need-track"><div class="need-bar" id="oil-bar" style="width:0%;background:var(--bluel)"></div></div>
+          </div>
+        </div>
+        <div class="need-item" style="background:rgba(200,168,75,.04);border-style:dashed">
+          <div class="need-name" style="color:rgba(200,168,75,.45)">Herbs (optional)</div>
+          <div class="need-hint">&#8220;Nice to have if the budget allows.&#8221;</div>
+          <div class="need-fill">
+            <div class="need-fill-lbl"><span>Amount</span><span id="herb-u">0 bunches</span></div>
+            <div class="need-track"><div class="need-bar" id="herb-bar" style="width:0%;background:var(--sagel)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: market -->
+    <div class="panel-center" id="market">
+      <div class="market-section-title">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Vendor Row &#183; Mathage Market
+      </div>
+
+      <!-- VENDOR A -->
+      <div class="vendor-block">
+        <div class="vendor-hdr">
+          <div class="vendor-name">Mira&#8217;s Grain &amp; Pantry</div>
+          <div class="vendor-tag" style="background:rgba(200,168,75,.12);color:#8A6020;border:1px solid rgba(200,168,75,.22)">General store</div>
+        </div>
+        <div class="items-grid">
+          <div class="item-card" id="i-flour-sm">
+            <div class="item-cat">Flour</div>
+            <div class="item-name">Small bag</div>
+            <div class="item-pack">1 kg pack</div>
+            <div class="item-price-row"><div class="item-price" id="p-flour-sm">4 coins</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('flour-sm',-1)">&#8722;</button>
+              <div class="qty-num" id="q-flour-sm">0</div>
+              <button class="qty-btn" onclick="change('flour-sm',1)">+</button>
+              <div class="item-subtotal" id="s-flour-sm"></div>
+            </div>
+          </div>
+          <div class="item-card" id="i-flour-lg">
+            <div class="item-cat">Flour</div>
+            <div class="item-name">Large sack</div>
+            <div class="item-pack">5 kg pack</div>
+            <div class="item-price-row"><div class="item-price">18 coins</div><div class="item-discount">10% bulk</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('flour-lg',-1)">&#8722;</button>
+              <div class="qty-num" id="q-flour-lg">0</div>
+              <button class="qty-btn" onclick="change('flour-lg',1)">+</button>
+              <div class="item-subtotal" id="s-flour-lg"></div>
+            </div>
+          </div>
+          <div class="item-card" id="i-oil-sm">
+            <div class="item-cat">Oil</div>
+            <div class="item-name">Bottle</div>
+            <div class="item-pack">0.5 L</div>
+            <div class="item-price-row"><div class="item-price">3 coins</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('oil-sm',-1)">&#8722;</button>
+              <div class="qty-num" id="q-oil-sm">0</div>
+              <button class="qty-btn" onclick="change('oil-sm',1)">+</button>
+              <div class="item-subtotal" id="s-oil-sm"></div>
+            </div>
+          </div>
+          <div class="item-card" id="i-herb-a">
+            <div class="item-cat">Herbs</div>
+            <div class="item-name">Mixed herbs</div>
+            <div class="item-pack">1 bunch</div>
+            <div class="item-price-row"><div class="item-price">2 coins</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('herb-a',-1)">&#8722;</button>
+              <div class="qty-num" id="q-herb-a">0</div>
+              <button class="qty-btn" onclick="change('herb-a',1)">+</button>
+              <div class="item-subtotal" id="s-herb-a"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VENDOR B -->
+      <div class="vendor-block">
+        <div class="vendor-hdr">
+          <div class="vendor-name">Tomas Farm Stand</div>
+          <div class="vendor-tag" style="background:rgba(184,64,48,.1);color:#8A2018;border:1px solid rgba(184,64,48,.2)">Fresh produce</div>
+        </div>
+        <div class="items-grid">
+          <div class="item-card" id="i-fruit-mix">
+            <div class="item-cat">Fruit</div>
+            <div class="item-name">Mixed basket</div>
+            <div class="item-pack">2 kg basket</div>
+            <div class="item-price-row"><div class="item-price">7 coins</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('fruit-mix',-1)">&#8722;</button>
+              <div class="qty-num" id="q-fruit-mix">0</div>
+              <button class="qty-btn" onclick="change('fruit-mix',1)">+</button>
+              <div class="item-subtotal" id="s-fruit-mix"></div>
+            </div>
+          </div>
+          <div class="item-card" id="i-fruit-bulk">
+            <div class="item-cat">Fruit</div>
+            <div class="item-name">Large crate</div>
+            <div class="item-pack">6 kg crate</div>
+            <div class="item-price-row"><div class="item-price">19 coins</div><div class="item-discount">5% off</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('fruit-bulk',-1)">&#8722;</button>
+              <div class="qty-num" id="q-fruit-bulk">0</div>
+              <button class="qty-btn" onclick="change('fruit-bulk',1)">+</button>
+              <div class="item-subtotal" id="s-fruit-bulk"></div>
+            </div>
+          </div>
+          <div class="item-card" id="i-herb-b">
+            <div class="item-cat">Herbs</div>
+            <div class="item-name">Fresh rosemary</div>
+            <div class="item-pack">1 bunch</div>
+            <div class="item-price-row"><div class="item-price">1.5 coins</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('herb-b',-1)">&#8722;</button>
+              <div class="qty-num" id="q-herb-b">0</div>
+              <button class="qty-btn" onclick="change('herb-b',1)">+</button>
+              <div class="item-subtotal" id="s-herb-b"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VENDOR C -->
+      <div class="vendor-block">
+        <div class="vendor-hdr">
+          <div class="vendor-name">The Oil Press</div>
+          <div class="vendor-tag" style="background:rgba(58,112,184,.1);color:#1A4888;border:1px solid rgba(58,112,184,.2)">Specialist</div>
+        </div>
+        <div class="items-grid">
+          <div class="item-card" id="i-oil-med">
+            <div class="item-cat">Oil</div>
+            <div class="item-name">Medium jug</div>
+            <div class="item-pack">1 L jug</div>
+            <div class="item-price-row"><div class="item-price">5 coins</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('oil-med',-1)">&#8722;</button>
+              <div class="qty-num" id="q-oil-med">0</div>
+              <button class="qty-btn" onclick="change('oil-med',1)">+</button>
+              <div class="item-subtotal" id="s-oil-med"></div>
+            </div>
+          </div>
+          <div class="item-card" id="i-oil-lg">
+            <div class="item-cat">Oil</div>
+            <div class="item-name">Large barrel</div>
+            <div class="item-pack">3 L barrel</div>
+            <div class="item-price-row"><div class="item-price">13 coins</div><div class="item-discount">15% bulk</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('oil-lg',-1)">&#8722;</button>
+              <div class="qty-num" id="q-oil-lg">0</div>
+              <button class="qty-btn" onclick="change('oil-lg',1)">+</button>
+              <div class="item-subtotal" id="s-oil-lg"></div>
+            </div>
+          </div>
+          <div class="item-card" id="i-flour-med">
+            <div class="item-cat">Flour</div>
+            <div class="item-name">Medium bag</div>
+            <div class="item-pack">2 kg pack</div>
+            <div class="item-price-row"><div class="item-price">7 coins</div></div>
+            <div class="item-controls">
+              <button class="qty-btn" onclick="change('flour-med',-1)">&#8722;</button>
+              <div class="qty-num" id="q-flour-med">0</div>
+              <button class="qty-btn" onclick="change('flour-med',1)">+</button>
+              <div class="item-subtotal" id="s-flour-med"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: feedback -->
+    <div class="panel-right">
+      <div class="budget-block">
+        <div class="budget-title">
+          <span>Budget</span>
+          <span id="spent-display" style="font-family:var(--serif);font-size:13px;color:var(--txtm)">0 / 50</span>
+        </div>
+        <div class="budget-nums">
+          <span>0</span><span>25</span><span>50 coins</span>
+        </div>
+        <div class="budget-track">
+          <div class="budget-fill" id="budget-fill" style="width:0%;background:var(--sagel)"></div>
+        </div>
+        <div class="budget-remaining" id="budget-remaining">50</div>
+        <div class="budget-remaining-lbl">coins remaining</div>
+      </div>
+
+      <div class="inventory-block">
+        <div class="inv-title">Inventory</div>
+        <div class="inv-row">
+          <div class="inv-row-top"><span class="inv-lbl">Flour</span><span class="inv-val" id="inv-flour">0 kg</span></div>
+          <div class="inv-track"><div class="inv-bar" id="inv-flour-bar" style="width:0%;background:var(--goldl)"></div></div>
+        </div>
+        <div class="inv-row">
+          <div class="inv-row-top"><span class="inv-lbl">Fruit</span><span class="inv-val" id="inv-fruit">0 kg</span></div>
+          <div class="inv-track"><div class="inv-bar" id="inv-fruit-bar" style="width:0%;background:var(--redl)"></div></div>
+        </div>
+        <div class="inv-row">
+          <div class="inv-row-top"><span class="inv-lbl">Oil</span><span class="inv-val" id="inv-oil">0 L</span></div>
+          <div class="inv-track"><div class="inv-bar" id="inv-oil-bar" style="width:0%;background:var(--bluel)"></div></div>
+        </div>
+        <div class="inv-row">
+          <div class="inv-row-top"><span class="inv-lbl">Herbs</span><span class="inv-val" id="inv-herb">0 bunches</span></div>
+          <div class="inv-track"><div class="inv-bar" id="inv-herb-bar" style="width:0%;background:var(--sagel)"></div></div>
+        </div>
+      </div>
+
+      <div class="sage-feedback" id="sage-feed">
+        <div class="sage-msg">
+          <div>The market is open. Choose what the village needs.</div>
+          <div class="sage-msg-time">Sage &#183; just now</div>
+        </div>
+      </div>
+
+      <div class="submit-block">
+        <div class="submit-eval" id="eval-badges"></div>
+        <button class="submit-btn" id="submit-btn" onclick="submitPlan()" disabled>Complete the plan</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RESULT OVERLAY -->
+<div class="result-ov" id="result-ov">
+  <div class="result-card">
+    <div class="result-top"></div>
+    <div class="result-body">
+      <div class="result-ornament">&#10022; &#10022; &#10022;</div>
+      <div class="result-title" id="res-title">Plan submitted.</div>
+      <div class="result-sub" id="res-sub">The village has what it needs for the festival.</div>
+      <hr class="result-divider">
+      <div class="result-evals" id="res-evals"></div>
+      <div class="result-sage" id="res-sage"></div>
+      <div class="result-summary" id="res-summary"></div>
+      <div class="result-btns">
+        <button class="result-btn p" onclick="tryAgain()">Try a different plan</button>
+        <button class="result-btn s" onclick="window.location.href='build.html'">Return to Quest Board</button>
+      </div>
+    </div>
+    <div class="result-top-bot"></div>
+  </div>
+</div>
+
+<script>
+var BUDGET = 50;
+var items = {
+  'flour-sm':  {price:4,    qty:0, flour:1,   fruit:0, oil:0,   herb:0},
+  'flour-med': {price:7,    qty:0, flour:2,   fruit:0, oil:0,   herb:0},
+  'flour-lg':  {price:18,   qty:0, flour:5,   fruit:0, oil:0,   herb:0},
+  'fruit-mix': {price:7,    qty:0, flour:0,   fruit:2, oil:0,   herb:0},
+  'fruit-bulk':{price:19,   qty:0, flour:0,   fruit:6, oil:0,   herb:0},
+  'oil-sm':    {price:3,    qty:0, flour:0,   fruit:0, oil:0.5, herb:0},
+  'oil-med':   {price:5,    qty:0, flour:0,   fruit:0, oil:1,   herb:0},
+  'oil-lg':    {price:13,   qty:0, flour:0,   fruit:0, oil:3,   herb:0},
+  'herb-a':    {price:2,    qty:0, flour:0,   fruit:0, oil:0,   herb:1},
+  'herb-b':    {price:1.5,  qty:0, flour:0,   fruit:0, oil:0,   herb:1},
+};
+
+var sageTimer = null;
+var lastSpend = 0;
+var changes = 0;
+
+function change(id, delta) {
+  var item = items[id];
+  item.qty = Math.max(0, item.qty + delta);
+  var sub = document.getElementById('s-' + id);
+  var qty = document.getElementById('q-' + id);
+  qty.textContent = item.qty;
+  var cost = +(item.price * item.qty).toFixed(2);
+  sub.textContent = cost > 0 ? cost + ' c' : '';
+  changes++;
+  updateAll();
+}
+
+function getTotals() {
+  var spent = 0, flour = 0, fruit = 0, oil = 0, herb = 0;
+  for (var k in items) {
+    var it = items[k];
+    spent += it.price * it.qty;
+    flour += it.flour * it.qty;
+    fruit += it.fruit * it.qty;
+    oil   += it.oil   * it.qty;
+    herb  += it.herb  * it.qty;
+  }
+  return {spent:+spent.toFixed(2), flour:+flour.toFixed(1), fruit:+fruit.toFixed(1), oil:+oil.toFixed(1), herb:+herb.toFixed(1)};
+}
+
+function updateAll() {
+  var t = getTotals();
+  var pct = Math.min(100, (t.spent / BUDGET) * 100);
+  var rem = +(BUDGET - t.spent).toFixed(2);
+
+  document.getElementById('budget-fill').style.width = pct + '%';
+  document.getElementById('budget-fill').style.background = rem < 0 ? 'var(--redl)' : pct > 80 ? 'var(--warm)' : 'var(--sagel)';
+  document.getElementById('budget-remaining').textContent = rem < 0 ? '-' + Math.abs(rem) : rem;
+  document.getElementById('budget-remaining').style.color = rem < 0 ? 'var(--redl)' : 'var(--goldl)';
+  document.getElementById('spent-display').textContent = t.spent + ' / ' + BUDGET;
+
+  // needs bars
+  var flourPct = Math.min(100, (t.flour / 10) * 100);
+  var fruitPct = Math.min(100, (t.fruit / 8)  * 100);
+  var oilPct   = Math.min(100, (t.oil   / 5)  * 100);
+  var herbPct  = Math.min(100, (t.herb  / 4)  * 100);
+  document.getElementById('flour-bar').style.width = flourPct + '%';
+  document.getElementById('fruit-bar').style.width = fruitPct + '%';
+  document.getElementById('oil-bar').style.width   = oilPct   + '%';
+  document.getElementById('herb-bar').style.width  = herbPct  + '%';
+  document.getElementById('flour-kg').textContent = t.flour + ' kg';
+  document.getElementById('fruit-kg').textContent = t.fruit + ' kg';
+  document.getElementById('oil-l').textContent    = t.oil   + ' L';
+  document.getElementById('herb-u').textContent   = t.herb  + ' bunches';
+
+  // inventory
+  document.getElementById('inv-flour').textContent = t.flour + ' kg';
+  document.getElementById('inv-fruit').textContent = t.fruit + ' kg';
+  document.getElementById('inv-oil').textContent   = t.oil   + ' L';
+  document.getElementById('inv-herb').textContent  = t.herb  + ' bunches';
+  document.getElementById('inv-flour-bar').style.width = flourPct + '%';
+  document.getElementById('inv-fruit-bar').style.width = fruitPct + '%';
+  document.getElementById('inv-oil-bar').style.width   = oilPct   + '%';
+  document.getElementById('inv-herb-bar').style.width  = herbPct  + '%';
+
+  // eval badges + submit
+  updateEval(t, rem);
+
+  // sage nudges
+  clearTimeout(sageTimer);
+  sageTimer = setTimeout(function() { checkSageNudge(t, rem); }, 1800);
+}
+
+function updateEval(t, rem) {
+  var badges = [];
+  var canSubmit = false;
+
+  if (t.flour >= 4 && t.fruit >= 3 && t.oil >= 1) canSubmit = true;
+
+  if (rem < 0) {
+    badges.push({lbl:'Over budget', color:'var(--redl)', bg:'rgba(184,64,48,.12)', border:'rgba(184,64,48,.25)'});
+    canSubmit = false;
+  } else if (rem <= 5 && t.flour >= 4 && t.fruit >= 3 && t.oil >= 1) {
+    badges.push({lbl:'Efficient', color:'#8ABF60', bg:'rgba(90,138,60,.12)', border:'rgba(90,138,60,.25)'});
+  }
+
+  if (t.flour > 0 && t.fruit > 0 && t.oil > 0) {
+    var ratio = t.flour / (t.fruit || 1);
+    if (ratio >= 0.8 && ratio <= 2.5) {
+      badges.push({lbl:'Balanced', color:'var(--goldl)', bg:'rgba(200,168,75,.1)', border:'rgba(200,168,75,.22)'});
+    }
+  }
+  if (t.herb > 0 && rem > 0) {
+    badges.push({lbl:'Creative', color:'var(--purplel)', bg:'rgba(106,74,154,.1)', border:'rgba(106,74,154,.22)'});
+  }
+  if (t.flour === 0 || t.fruit === 0 || t.oil === 0) {
+    if (t.spent > 0) badges.push({lbl:'Needs adjustment', color:'rgba(232,208,144,.5)', bg:'rgba(200,168,75,.06)', border:'rgba(200,168,75,.12)'});
+  }
+
+  var el = document.getElementById('eval-badges');
+  el.innerHTML = badges.map(function(b) {
+    return '<div class="eval-badge" style="color:'+b.color+';background:'+b.bg+';border-color:'+b.border+'">'+b.lbl+'</div>';
+  }).join('');
+
+  var btn = document.getElementById('submit-btn');
+  if (rem < 0) {
+    btn.disabled = false;
+    btn.className = 'submit-btn over';
+    btn.textContent = 'Over budget &#8212; adjust the plan';
+  } else if (canSubmit) {
+    btn.disabled = false;
+    btn.className = 'submit-btn ready';
+    btn.textContent = 'Complete the plan &#8594;';
+  } else {
+    btn.disabled = true;
+    btn.className = 'submit-btn';
+    btn.textContent = 'Complete the plan';
+  }
+}
+
+var sageMessages = [];
+var lastSageMsg = '';
+
+function addSageMsg(txt) {
+  if (txt === lastSageMsg) return;
+  lastSageMsg = txt;
+  var feed = document.getElementById('sage-feed');
+  var msg = document.createElement('div');
+  msg.className = 'sage-msg';
+  var now = new Date();
+  var time = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  msg.innerHTML = '<div>'+txt+'</div><div class="sage-msg-time">Sage &#183; just now</div>';
+  feed.appendChild(msg);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function checkSageNudge(t, rem) {
+  if (rem < 0) {
+    addSageMsg('Something needs to change. The budget can\'t stretch that far.');
+  } else if (t.spent > 5 && (t.flour === 0 || t.fruit === 0 || t.oil === 0)) {
+    addSageMsg('You have some items&#8230; but do they cover everything the village needs?');
+  } else if (t.flour > 12 && t.fruit < 2) {
+    addSageMsg('The mixture feels unbalanced. There\'s a lot of one thing, and not much of another.');
+  } else if (changes >= 6 && rem <= 5 && rem >= 0 && t.flour >= 4 && t.fruit >= 3 && t.oil >= 1) {
+    addSageMsg('You found a plan quickly. I wonder what other combinations you might discover.');
+  } else if (t.oil >= 4) {
+    addSageMsg('That\'s quite a lot of oil. Is all of it needed, or could you use that budget elsewhere?');
+  }
+}
+
+function submitPlan() {
+  var t = getTotals();
+  var rem = +(BUDGET - t.spent).toFixed(2);
+  if (rem < 0) return;
+
+  var evals = [];
+  if (rem <= 5) evals.push({icon:'&#9733;', lbl:'Efficient', color:'#3A6010', bg:'rgba(90,138,60,.1)', border:'rgba(90,138,60,.2)'});
+  if (t.flour > 0 && t.fruit > 0 && t.oil > 0) {
+    var ratio = t.flour / (t.fruit || 1);
+    if (ratio >= 0.8 && ratio <= 2.5) evals.push({icon:'&#9670;', lbl:'Balanced', color:'#6A4808', bg:'rgba(200,168,75,.1)', border:'rgba(200,168,75,.2)'});
+  }
+  if (t.herb > 0) evals.push({icon:'&#10022;', lbl:'Creative', color:'#4A3070', bg:'rgba(106,74,154,.1)', border:'rgba(106,74,154,.2)'});
+  if (changes >= 8) evals.push({icon:'&#8635;', lbl:'Explorer', color:'#1A4878', bg:'rgba(58,112,184,.1)', border:'rgba(58,112,184,.2)'});
+  if (evals.length === 0) evals.push({icon:'&#9651;', lbl:'Needs adjustment', color:'#5A4010', bg:'rgba(200,168,75,.06)', border:'rgba(200,168,75,.12)'});
+
+  var sage = '';
+  if (rem <= 3) sage = 'You used almost every coin. That\'s careful thinking.';
+  else if (t.herb > 0) sage = 'You remembered the optional items too. That shows attention.';
+  else if (changes >= 8) sage = 'You explored many combinations before deciding. That is powerful.';
+  else sage = 'You found a working plan. Next time, you can try more paths too.';
+
+  document.getElementById('res-title').textContent = 'Plan submitted.';
+  document.getElementById('res-sub').textContent = 'The village market has what it needs for the festival.';
+  document.getElementById('res-evals').innerHTML = evals.map(function(e) {
+    return '<div class="result-eval" style="color:'+e.color+';background:'+e.bg+';border-color:'+e.border+'"><div class="re-icon">'+e.icon+'</div><div class="re-lbl">'+e.lbl+'</div></div>';
+  }).join('');
+  document.getElementById('res-sage').innerHTML = '<div class="result-sage-txt">&#8220;'+sage+'&#8221;</div><div style="font-family:var(--sans);font-size:11px;color:var(--ink3);margin-top:4px">&#8212; Sage</div>';
+  document.getElementById('res-summary').innerHTML =
+    '<div class="rs-item"><div class="rs-val">'+t.spent+' c</div><div class="rs-lbl">Total spent</div></div>' +
+    '<div class="rs-item"><div class="rs-val">'+rem+' c</div><div class="rs-lbl">Remaining</div></div>' +
+    '<div class="rs-item"><div class="rs-val">'+changes+'</div><div class="rs-lbl">Adjustments</div></div>';
+  document.getElementById('result-ov').classList.add('open');
+  if (window.SAGE) {
+    var earned = rem <= 5 ? 15 : rem <= 15 ? 10 : 5;
+    setTimeout(function(){ window.SAGE.awardCoins(earned, 'Great planning! +' + earned + ' coins'); }, 600);
+  }
+}
+
+function tryAgain() {
+  document.getElementById('result-ov').classList.remove('open');
+  for (var k in items) {
+    items[k].qty = 0;
+    var q = document.getElementById('q-' + k);
+    var s = document.getElementById('s-' + k);
+    if (q) q.textContent = '0';
+    if (s) s.textContent = '';
+  }
+  changes = 0; lastSageMsg = '';
+  updateAll();
+  var feed = document.getElementById('sage-feed');
+  feed.innerHTML = '<div class="sage-msg"><div>A fresh start. What will you try this time?</div><div class="sage-msg-time">Sage &#183; just now</div></div>';
+}
+
+function startTask() {
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('task').classList.add('active');
+}
+
+function saveProgress() { alert('Progress saved.'); }
+
+// ══════════════════════════════════════════
+// SAGE RULE-BASED HINTS — Build Mode
+// ══════════════════════════════════════════
+var buildSageTimer = null;
+var buildSageLastChange = Date.now();
+var buildSageMsgCount = 0;
+
+function showBuildSage(fallbackMsg, context) {
+  // Try API first, fallback to rule message
+  var ctx = context || {};
+  fetch('/api/sage-hint', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      mode: 'build',
+      task: 'market_shopping',
+      concept: 'budgeting',
+      goal: 'restock village market within 50 coin budget',
+      attempts: buildSageMsgCount,
+      student_action: ctx.action || 'shopping',
+      hint_level: Math.min(3, 1 + buildSageMsgCount),
+    })
+  }).then(function(r){return r.json();}).then(function(d){
+    appendSageFeed(d&&d.message ? d.message : fallbackMsg);
+  }).catch(function(){
+    appendSageFeed(fallbackMsg);
+  });
+}
+
+function appendSageFeed(msg) {
+  var feed = document.getElementById('sage-feed');
+  if (!feed) return;
+  var div = document.createElement('div');
+  div.className = 'sage-msg';
+  div.innerHTML = '<div>' + msg + '</div><div class="sage-msg-time">Sage &middot; just now</div>';
+  feed.appendChild(div);
+  feed.scrollTop = feed.scrollHeight;
+  buildSageMsgCount++;
+}
+
+function checkBuildSageRules() {
+  var t = getTotals();
+  var rem = +(50 - t.spent).toFixed(2);
+  var elapsed = (Date.now() - buildSageLastChange) / 1000;
+
+  // Over budget
+  if (rem < 0) {
+    showBuildSage("Something needs to change. Does this plan still fit your budget?", {action:"over budget, spent "+getTotals().spent+" of 50 coins"});
+    return;
+  }
+  // Nothing in cart after 30s
+  if (t.spent === 0 && elapsed > 30) {
+    showBuildSage("The market is waiting. What does the village need most?", {action:"no items selected yet"});
+    return;
+  }
+  // Idle with items in cart for 35s
+  if (t.spent > 0 && elapsed > 35 && buildSageMsgCount < 3) {
+    showBuildSage("You have some items. Does the balance feel right across everything you need?", {action:"idle with items in cart"});
+    return;
+  }
+  // Way too much of one thing
+  if (t.flour > 15) {
+    showBuildSage("That is quite a lot of flour. Could that budget be used elsewhere?", {action:"too much flour purchased"});
+    return;
+  }
+  if (t.oil > 5) {
+    showBuildSage("Lots of oil here. Is all of it needed, or could you adjust?");
+    return;
+  }
+  // Missing categories
+  if (t.spent > 10 && t.fruit === 0) {
+    showBuildSage("You have many items, but do they cover everything the village needs?", {action:"missing fruit category"});
+    return;
+  }
+  // Compare vendors hint (after 5+ changes)
+  if (buildSageMsgCount === 0 && Object.values(getItemQtys()).filter(function(q){return q>0}).length >= 3) {
+    showBuildSage("Which option gives you more for the same cost? Sometimes a larger pack saves coins.", {action:"comparing vendors"});
+  }
+}
+
+function getItemQtys() {
+  var qtys = {};
+  Object.keys(items).forEach(function(k){ qtys[k] = items[k].qty; });
+  return qtys;
+}
+
+// Reset idle timer on every cart change
+var origChange = window.change || function(){};
+var _changeCount = 0;
+// Hook into change() calls
+(function(){
+  var realUpdate = updateAll;
+  updateAll = function() {
+    realUpdate();
+    buildSageLastChange = Date.now();
+    _changeCount++;
+    clearTimeout(buildSageTimer);
+    buildSageTimer = setTimeout(checkBuildSageRules, 35000);
+    // Immediate over-budget check
+    var t = getTotals();
+    var rem = +(50 - t.spent).toFixed(2);
+    if (rem < 0) {
+      clearTimeout(buildSageTimer);
+      setTimeout(checkBuildSageRules, 800);
+    }
+  };
+})();
+
+</script>
+
+<script>
+  document.body.dataset.sageMode = 'float';
+</script>
+<script src="sage-component.js"></script>
+</body>
+</html>

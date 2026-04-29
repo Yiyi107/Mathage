@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathage &#8212; Build Mode</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Source+Sans+3:wght@300;400;600&family=Caveat:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1A1208;
+  --parch:#F5E8C8;--parch2:#EDD8A8;--parch3:#E0C888;
+  --ink:#2A1A08;--ink2:#4A3018;--ink3:#6A4828;
+  --gold:#C8A84B;--goldl:#E8D090;--goldp:#F7EDD4;
+  --sage:#5A8A3C;--sagel:#8ABF60;--sagep:#C8DFB0;
+  --purple:#6A4A9A;--purplel:#B090D8;
+  --sky:#4A78B8;--skyl:#90B8E8;
+  --warm:#F0C870;--warml:#F8DFA0;
+  --cream:#FDFAF4;
+  --txti:rgba(253,250,244,0.92);--txtm:rgba(253,250,244,0.52);
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --hand:'Caveat',cursive;
+}
+html,body{height:100%;margin:0;padding:0;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg);display:flex;flex-direction:column;height:100vh;color:var(--txti)}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:52px;flex-shrink:0;background:rgba(253,250,244,0.94);border-bottom:1px solid rgba(200,185,150,0.4);z-index:50}
+.nav-logo{font-family:var(--serif);font-size:18px;font-weight:600;color:#1C3A1E;display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-dot{width:22px;height:22px;border-radius:50%;background:#1C3A1E;display:flex;align-items:center;justify-content:center}
+.logo-seed{width:8px;height:8px;border-radius:50%;background:#B8DFA0}
+.nav-mid{display:flex;align-items:center;gap:6px;font-family:var(--sans);font-size:13px;color:#6a6f73}
+.nav-sep{color:#C8C0B0;margin:0 4px}
+.nav-active{color:#1C3A1E;font-weight:600}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-user{font-family:var(--sans);font-size:13px;color:#6a6f73}
+.nav-streak{display:flex;align-items:center;gap:6px;background:var(--goldp);border-radius:50px;padding:4px 14px;border:1px solid var(--goldl)}
+.streak-num{font-family:var(--serif);font-size:14px;font-weight:600;color:#3A2A00}
+.streak-lbl{font-family:var(--sans);font-size:11px;color:#6A5010}
+
+.main{flex:1;position:relative;overflow:hidden;display:flex}
+
+/* background */
+.scene-bg{position:absolute;inset:0;overflow:hidden}
+.scene-bg img{width:100%;height:100%;object-fit:cover;object-position:center center;opacity:.9}
+.scene-bg-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,18,8,0.12) 0%,rgba(26,18,8,0.0) 20%,rgba(26,18,8,0.15) 70%,rgba(26,18,8,0.5) 100%)}
+
+/* particles */
+.particles{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.pt{position:absolute;border-radius:50%;opacity:0;animation:fup 3.5s ease-out forwards}
+@keyframes fup{0%{opacity:0;transform:translateY(0) scale(0)}15%{opacity:.7}100%{opacity:0;transform:translateY(-160px) scale(.15)}}
+
+/* left panel */
+.left-panel{
+  position:relative;z-index:10;
+  width:220px;flex-shrink:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 0 0 32px;
+  pointer-events:none;
+}
+.left-eyebrow{font-family:var(--hand);font-size:13px;color:rgba(232,208,144,0.45);letter-spacing:.5px;margin-bottom:8px}
+.left-title{font-family:var(--hand);font-size:36px;color:rgba(247,237,180,0.82);line-height:1.2;margin-bottom:14px;text-shadow:0 2px 12px rgba(180,140,40,0.2)}
+.left-sub{font-family:var(--hand);font-size:17px;color:rgba(247,237,180,0.45);line-height:1.5;max-width:160px}
+
+/* center board */
+.board-area{
+  flex:1;position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:center;
+  padding:16px 0;
+}
+.board{
+  position:relative;
+  width:min(660px,90%);
+}
+
+/* clipboard SVG frame */
+.clipboard-frame{
+  width:100%;
+  background:rgba(80,50,20,0.0);
+  border-radius:16px;
+  padding:40px 32px 28px;
+  position:relative;
+}
+
+/* clip top */
+.clip-top{
+  position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+  width:60px;height:36px;
+  background:linear-gradient(to bottom,#9A7A3A,#C8A84B);
+  border-radius:8px 8px 4px 4px;
+  border:2px solid #8A6A28;
+  display:flex;align-items:center;justify-content:center;
+  z-index:5;
+}
+.clip-hole{width:18px;height:10px;border-radius:50%;background:#3A2008;border:1.5px solid #6A4818}
+
+/* board header */
+.board-header{
+  text-align:center;margin-bottom:20px;
+  border-bottom:1.5px dashed rgba(200,168,75,0.3);
+  padding-bottom:14px;
+}
+.board-header-eyebrow{font-family:var(--hand);font-size:13px;color:rgba(200,168,75,0.55);letter-spacing:.8px;margin-bottom:4px}
+.board-header-title{font-family:var(--hand);font-size:28px;font-weight:600;color:var(--goldl);line-height:1.1;margin-bottom:4px}
+.board-header-sub{font-family:var(--hand);font-size:15px;color:rgba(247,237,180,0.45)}
+
+/* task cards grid */
+.tasks-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-bottom:16px;
+}
+.task-card{
+  position:relative;cursor:pointer;
+  background:var(--parch);
+  border-radius:6px;
+  padding:0;
+  border:1.5px solid var(--parch3);
+  box-shadow:2px 3px 10px rgba(0,0,0,0.35),inset 0 0 20px rgba(180,140,60,0.08);
+  transition:transform .22s ease, box-shadow .22s ease, filter .22s;
+  overflow:hidden;
+}
+.task-card:hover{
+  transform:translateY(-6px) scale(1.025);
+  box-shadow:4px 8px 24px rgba(0,0,0,0.45),0 0 20px rgba(200,168,75,0.2);
+  filter:brightness(1.05);
+  z-index:10;
+}
+.task-card:hover .card-glow{opacity:1}
+.task-card:hover .card-tooltip{opacity:1;transform:translateY(-4px)}
+
+/* card pin */
+.card-pin{
+  position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid rgba(160,120,40,0.8);
+  z-index:5;
+}
+
+/* card image area */
+.card-img{
+  height:110px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:var(--parch2);
+  border-bottom:1.5px solid var(--parch3);
+}
+.card-img img{width:100%;height:100%;object-fit:cover;opacity:.92}
+.card-img-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;
+}
+.card-img-svg{width:56px;height:56px;opacity:.6}
+
+/* card glow overlay */
+.card-glow{
+  position:absolute;inset:0;
+  background:rgba(200,168,75,0.08);
+  opacity:0;transition:opacity .22s;
+  pointer-events:none;
+}
+
+/* card body */
+.card-body{padding:12px 14px 14px}
+.card-tag{
+  display:inline-block;font-family:var(--sans);font-size:9px;font-weight:600;
+  letter-spacing:.8px;text-transform:uppercase;
+  padding:2px 8px;border-radius:50px;margin-bottom:7px;
+}
+.card-title{font-family:var(--hand);font-size:18px;font-weight:600;color:var(--ink);line-height:1.15;margin-bottom:5px}
+.card-desc{font-family:var(--sans);font-size:11px;font-weight:400;color:var(--ink2);line-height:1.45;margin-bottom:10px}
+.card-meta{display:flex;align-items:center;justify-content:space-between}
+.card-diff{font-family:var(--sans);font-size:10px;font-weight:600;color:var(--ink3);display:flex;align-items:center;gap:4px}
+.diff-dot{width:6px;height:6px;border-radius:50%}
+.card-cta{
+  font-family:var(--sans);font-size:10px;font-weight:600;
+  border-radius:50px;padding:3px 10px;border:none;cursor:pointer;
+  transition:all .15s;
+}
+
+/* tooltip */
+.card-tooltip{
+  position:absolute;bottom:calc(100% + 8px);left:50%;
+  transform:translateX(-50%) translateY(0);
+  background:rgba(26,18,8,0.92);border:1px solid rgba(200,168,75,0.3);
+  border-radius:8px;padding:7px 12px;
+  font-family:var(--serif);font-size:12px;font-style:italic;color:var(--goldl);
+  white-space:nowrap;opacity:0;transition:opacity .2s,transform .2s;
+  pointer-events:none;z-index:20;text-align:center;
+}
+
+/* board footer */
+.board-footer{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border-top:1.5px dashed rgba(200,168,75,0.2);padding-top:12px;
+}
+.board-footer-txt{font-family:var(--hand);font-size:13px;color:rgba(200,168,75,0.38)}
+.coming-tag{
+  font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.6px;
+  text-transform:uppercase;padding:2px 8px;border-radius:50px;
+  background:rgba(200,168,75,0.1);color:rgba(200,168,75,0.45);
+  border:1px solid rgba(200,168,75,0.18);
+}
+
+/* right panel */
+.right-panel{
+  position:relative;z-index:10;
+  width:200px;flex-shrink:0;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+  padding:0 28px 0 0;gap:12px;
+}
+.rp-card{
+  background:rgba(26,18,8,0.72);
+  border:1px solid rgba(200,168,75,0.18);
+  border-radius:12px;padding:14px 16px;
+  backdrop-filter:blur(10px);width:100%;
+}
+.rp-label{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:rgba(200,168,75,0.45);margin-bottom:8px}
+.rp-stat{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.rp-stat:last-child{margin-bottom:0}
+.rp-stat-lbl{font-family:var(--sans);font-size:12px;color:rgba(247,237,180,0.5)}
+.rp-stat-val{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--goldl)}
+
+/* sage float */
+.sage-float{
+  position:absolute;bottom:24px;right:24px;z-index:20;
+  display:flex;flex-direction:column;align-items:flex-end;gap:8px;
+}
+.sage-btn{
+  width:48px;height:48px;border-radius:50%;
+  background:rgba(26,18,8,0.85);
+  border:1.5px solid rgba(200,168,75,0.35);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;font-size:20px;
+  backdrop-filter:blur(10px);
+}
+.sage-btn:hover{background:rgba(50,36,14,0.95);border-color:rgba(200,168,75,0.65);transform:scale(1.08)}
+.sage-bubble{
+  background:rgba(26,18,8,0.94);border:1px solid rgba(168,212,168,0.25);
+  border-radius:14px;padding:12px 16px;max-width:220px;
+  font-family:var(--serif);font-size:13px;font-style:italic;
+  color:#A8D4A8;line-height:1.55;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;
+  transform:translateY(6px);backdrop-filter:blur(12px);
+}
+.sage-bubble.show{opacity:1;pointer-events:all;transform:translateY(0)}
+.sage-bubble p{margin-bottom:8px}
+.sage-bubble .sb-close{
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  background:rgba(90,138,60,0.18);border:1px solid rgba(90,138,60,0.3);
+  border-radius:20px;padding:3px 10px;cursor:pointer;color:#A8D4A8;
+  transition:all .15s;margin-top:4px;display:inline-block;
+}
+.sb-close:hover{background:rgba(90,138,60,0.32)}
+
+/* modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,8,4,0.65);align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--parch);border-radius:8px;
+  border:2px solid var(--parch3);
+  max-width:420px;width:90%;
+  box-shadow:0 20px 56px rgba(0,0,0,0.5);
+  overflow:hidden;position:relative;
+}
+.modal-top{height:5px;background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 8px,#8A6020 8px,#8A6020 16px)}
+.modal-body{padding:28px 30px 28px}
+.modal-tag{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;display:inline-block;padding:2px 10px;border-radius:50px}
+.modal-title{font-family:var(--hand);font-size:26px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.modal-sub{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--ink2);margin-bottom:14px;line-height:1.5}
+.modal-divider{border:none;border-top:1px dashed var(--parch3);margin:0 0 14px}
+.modal-desc{font-family:var(--sans);font-size:13px;color:var(--ink2);line-height:1.65;margin-bottom:18px}
+.modal-skills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.skill-tag{font-family:var(--sans);font-size:11px;font-weight:600;padding:3px 10px;border-radius:50px;border:1px solid currentColor}
+.modal-meta{display:flex;gap:16px;margin-bottom:22px}
+.meta-item{text-align:center}
+.meta-lbl{font-family:var(--sans);font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink3);margin-bottom:3px}
+.meta-val{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink)}
+.modal-btn{
+  width:100%;font-family:var(--hand);font-size:18px;font-weight:600;
+  border:none;border-radius:5px;padding:13px;cursor:pointer;transition:all .18s;
+  color:var(--cream);
+}
+.modal-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.modal-close{position:absolute;top:14px;right:14px;font-family:var(--sans);font-size:18px;color:var(--ink3);background:none;border:none;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--ink)}
+.modal-bot{height:5px;background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 8px,#8A6020 8px,#8A6020 16px)}
+
+.fade-in{animation:fi .5s ease forwards}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor:pointer"><img src="images/logo.png" alt="Mathage" style="height:36px;width:auto;display:block;object-fit:contain;">
+  </div>
+  <div class="nav-mid">
+    <span style="cursor:pointer" onclick="window.location.href='dashboard.html'">My Room</span><span class="nav-sep">&#8250;</span>
+    <span class="nav-active">Build Mode</span>
+  </div>
+  <div class="nav-right">
+      <button class="nav-btn" onclick="window.location.href='dashboard.html'" style="display:inline-block">Exit</button>
+    <span class="nav-user">Alex&#8217;s Place &nbsp;&#183;&nbsp; Grade 7</span>
+    <div class="nav-streak"><span class="streak-num">7</span><span class="streak-lbl">day streak</span></div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="scene-bg">
+    <img src="images/build-bg.png" alt="quest board background">
+    <div class="scene-bg-overlay"></div>
+  </div>
+  <div class="particles" id="pts"></div>
+
+  <!-- LEFT -->
+  <div class="left-panel fade-in">
+    <div class="left-eyebrow">Build Mode</div>
+    <div class="left-title">Choose your<br>quest.</div>
+    <div class="left-sub">Real math.<br>Real tasks.<br>Your call.</div>
+  </div>
+
+  <!-- CENTER BOARD -->
+  <div class="board-area">
+    <div class="board fade-in">
+      <div class="clipboard-frame">
+        <div class="clip-top"><div class="clip-hole"></div></div>
+
+        <div class="board-header">
+          <div class="board-header-eyebrow">Quest Board &#183; Mathage Village</div>
+          <div class="board-header-title">Available Tasks</div>
+          <div class="board-header-sub">Pick a task and put your math to work</div>
+        </div>
+
+        <div class="tasks-grid">
+
+          <!-- SHOPPING LIST -->
+          <div class="task-card" onclick="openModal('shopping')">
+            <div class="card-pin" style="background:linear-gradient(to bottom,#E05030,#C03820)"></div>
+            <div class="card-img">
+              <img src="images/build-shopping.png" alt="shopping list task" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="card-img-placeholder" style="display:none">
+                <svg class="card-img-svg" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="10" y="6" width="36" height="44" rx="4" fill="#C8A84B" opacity=".25" stroke="#C8A84B" stroke-width="1.5"/>
+                  <line x1="17" y1="18" x2="39" y2="18" stroke="#8A6020" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="17" y1="24" x2="34" y2="24" stroke="#8A6020" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="17" y1="30" x2="36" y2="30" stroke="#8A6020" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="17" y1="36" x2="30" y2="36" stroke="#8A6020" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="13" cy="18" r="2" fill="#C8A84B" opacity=".6"/>
+                  <circle cx="13" cy="24" r="2" fill="#C8A84B" opacity=".6"/>
+                  <circle cx="13" cy="30" r="2" fill="#C8A84B" opacity=".6"/>
+                  <circle cx="13" cy="36" r="2" fill="#C8A84B" opacity=".6"/>
+                </svg>
+                <div style="font-family:var(--hand);font-size:12px;color:rgba(140,100,30,0.5)">Shopping List</div>
+              </div>
+              <div class="card-glow"></div>
+            </div>
+            <div class="card-body">
+              <div class="card-tag" style="background:rgba(200,90,50,0.12);color:#A04020;border:1px solid rgba(200,90,50,0.25)">Ratios &#183; Percent</div>
+              <div class="card-title">Help with the<br>Shopping List</div>
+              <div class="card-desc">The village market needs restocking. Work out quantities, compare prices, and stay within budget.</div>
+              <div class="card-meta">
+                <div class="card-diff"><div class="diff-dot" style="background:#5A8A3C"></div>Gentle start</div>
+                <button class="card-cta" style="background:rgba(200,90,50,0.15);color:#A04020;border:1px solid rgba(200,90,50,0.25)">Take task</button>
+              </div>
+            </div>
+            <div class="card-tooltip">Work out quantities &#38; stay within budget</div>
+          </div>
+
+          <!-- DESIGN A HOUSE -->
+          <div class="task-card" onclick="openModal('house')">
+            <div class="card-pin" style="background:linear-gradient(to bottom,#4A7AB8,#2A5A98)"></div>
+            <div class="card-img">
+              <img src="images/build-house.png" alt="house design task" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="card-img-placeholder" style="display:none">
+                <svg class="card-img-svg" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="28,8 8,24 48,24" fill="#7EB8D4" opacity=".3" stroke="#4A78B8" stroke-width="1.5" stroke-linejoin="round"/>
+                  <rect x="10" y="24" width="36" height="24" rx="2" fill="#90B8E8" opacity=".2" stroke="#4A78B8" stroke-width="1.5"/>
+                  <rect x="22" y="34" width="12" height="14" rx="1" fill="#4A78B8" opacity=".35"/>
+                  <rect x="13" y="27" width="8" height="8" rx="1" fill="#4A78B8" opacity=".35"/>
+                  <rect x="35" y="27" width="8" height="8" rx="1" fill="#4A78B8" opacity=".35"/>
+                  <line x1="8" y1="48" x2="48" y2="48" stroke="#4A78B8" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <div style="font-family:var(--hand);font-size:12px;color:rgba(60,90,160,0.5)">Design a House</div>
+              </div>
+              <div class="card-glow"></div>
+            </div>
+            <div class="card-body">
+              <div class="card-tag" style="background:rgba(74,120,184,0.12);color:#2A5898;border:1px solid rgba(74,120,184,0.25)">Geometry &#183; Area</div>
+              <div class="card-title">Design a<br>Village House</div>
+              <div class="card-desc">Sketch a floor plan, calculate room areas, and make sure everything fits within the plot.</div>
+              <div class="card-meta">
+                <div class="card-diff"><div class="diff-dot" style="background:#C8A84B"></div>Medium</div>
+                <button class="card-cta" style="background:rgba(74,120,184,0.15);color:#2A5898;border:1px solid rgba(74,120,184,0.25)">Take task</button>
+              </div>
+            </div>
+            <div class="card-tooltip">Calculate areas and design a floor plan</div>
+          </div>
+
+          <!-- PLAN A TRIP -->
+          <div class="task-card" onclick="openModal('trip')">
+            <div class="card-pin" style="background:linear-gradient(to bottom,#5A9A3C,#3A7A1C)"></div>
+            <div class="card-img">
+              <img src="images/build-trip.png" alt="trip planning task" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="card-img-placeholder" style="display:none">
+                <svg class="card-img-svg" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="6" y="10" width="44" height="36" rx="4" fill="#8ABF60" opacity=".2" stroke="#5A9A3C" stroke-width="1.5"/>
+                  <path d="M12 40 Q20 20 28 28 Q36 36 44 16" stroke="#5A9A3C" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="3,3"/>
+                  <circle cx="12" cy="40" r="3" fill="#C8A84B"/>
+                  <circle cx="44" cy="16" r="3" fill="#5A9A3C"/>
+                  <circle cx="28" cy="28" r="2.5" fill="#E8D090" stroke="#C8A84B" stroke-width="1"/>
+                </svg>
+                <div style="font-family:var(--hand);font-size:12px;color:rgba(50,100,30,0.5)">Plan a Trip</div>
+              </div>
+              <div class="card-glow"></div>
+            </div>
+            <div class="card-body">
+              <div class="card-tag" style="background:rgba(90,154,60,0.12);color:#2A6010;border:1px solid rgba(90,154,60,0.25)">Distance &#183; Rate &#183; Time</div>
+              <div class="card-title">Plan a Trip<br>Across Mathage</div>
+              <div class="card-desc">Choose your route, calculate travel times, and manage the journey budget from start to finish.</div>
+              <div class="card-meta">
+                <div class="card-diff"><div class="diff-dot" style="background:#C8A84B"></div>Medium</div>
+                <button class="card-cta" style="background:rgba(90,154,60,0.15);color:#2A6010;border:1px solid rgba(90,154,60,0.25)">Take task</button>
+              </div>
+            </div>
+            <div class="card-tooltip">Plan routes, times, and a journey budget</div>
+          </div>
+
+        </div>
+
+        <div class="board-footer">
+          <div class="board-footer-txt">More quests arriving soon</div>
+          <div class="coming-tag">Coming soon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-panel fade-in">
+    <div class="rp-card">
+      <div class="rp-label">My Progress</div>
+      <div class="rp-stat"><span class="rp-stat-lbl">Tasks done</span><span class="rp-stat-val">0</span></div>
+      <div class="rp-stat"><span class="rp-stat-lbl">Streak</span><span class="rp-stat-val">7 days</span></div>
+      <div class="rp-stat"><span class="rp-stat-lbl">Build score</span><span class="rp-stat-val">&#8212;</span></div>
+    </div>
+    <div class="rp-card">
+      <div class="rp-label">Skills used</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        <span style="font-family:var(--sans);font-size:10px;font-weight:600;padding:3px 8px;border-radius:50px;background:rgba(200,168,75,0.12);color:rgba(232,208,144,0.6);border:1px solid rgba(200,168,75,0.18)">Ratios</span>
+        <span style="font-family:var(--sans);font-size:10px;font-weight:600;padding:3px 8px;border-radius:50px;background:rgba(74,120,184,0.1);color:rgba(144,184,232,0.6);border:1px solid rgba(74,120,184,0.18)">Geometry</span>
+        <span style="font-family:var(--sans);font-size:10px;font-weight:600;padding:3px 8px;border-radius:50px;background:rgba(90,154,60,0.1);color:rgba(138,191,96,0.6);border:1px solid rgba(90,154,60,0.18)">Percent</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAGE -->
+  <div class="sage-float">
+    <div class="sage-bubble" id="sage-bubble">
+      <p>Build tasks are not about getting the perfect answer. They&#8217;re about making decisions with math.</p>
+      <p>Pick anything. You can always try a different approach.</p>
+      <span class="sb-close" onclick="closeSage()">Got it</span>
+    </div>
+    <div class="sage-btn" onclick="toggleSage()">&#9784;</div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-top"></div>
+    <div class="modal-body">
+      <button class="modal-close" onclick="closeModal()">&#215;</button>
+      <div class="modal-tag" id="m-tag"></div>
+      <div class="modal-title" id="m-title"></div>
+      <div class="modal-sub" id="m-sub"></div>
+      <hr class="modal-divider">
+      <div class="modal-desc" id="m-desc"></div>
+      <div class="modal-skills" id="m-skills"></div>
+      <div class="modal-meta">
+        <div class="meta-item"><div class="meta-lbl">Difficulty</div><div class="meta-val" id="m-diff"></div></div>
+        <div class="meta-item"><div class="meta-lbl">Math topics</div><div class="meta-val" id="m-topics"></div></div>
+        <div class="meta-item"><div class="meta-lbl">Est. time</div><div class="meta-val" id="m-time"></div></div>
+      </div>
+      <button class="modal-btn" id="m-btn"></button>
+    </div>
+    <div class="modal-bot"></div>
+  </div>
+</div>
+
+<script>
+var tasks={
+  shopping:{
+    tag:'Ratios &#183; Percent',tagBg:'rgba(200,90,50,0.12)',tagColor:'#A04020',tagBorder:'rgba(200,90,50,0.25)',
+    title:'Help with the Shopping List',
+    sub:'A task from the village market',
+    desc:'The village market needs restocking before the festival. You\'ll work out how much of each ingredient to buy, compare prices across vendors, and make sure the total stays within the allocated budget. Every decision matters.',
+    skills:['Ratios','Multiplication','Percent','Budgeting'],
+    skillColor:'#A04020',skillBg:'rgba(200,90,50,0.1)',skillBorder:'rgba(200,90,50,0.25)',
+    diff:'Gentle start',topics:'3',time:'15&#8211;20 min',
+    btnColor:'#8A3A18',btnText:'Accept this task &#8594;',
+    href:'build-shopping.html'
+  },
+  house:{
+    tag:'Geometry &#183; Area',tagBg:'rgba(74,120,184,0.12)',tagColor:'#2A5898',tagBorder:'rgba(74,120,184,0.25)',
+    title:'Design a Village House',
+    sub:'A task from the village architect',
+    desc:'A new house needs to be planned for the village. You\'ll sketch a floor plan, calculate room areas, check that rooms fit within the available plot, and figure out how much material is needed. Measurement precision counts.',
+    skills:['Area','Perimeter','Fractions','Scale'],
+    skillColor:'#2A5898',skillBg:'rgba(74,120,184,0.1)',skillBorder:'rgba(74,120,184,0.25)',
+    diff:'Medium',topics:'4',time:'20&#8211;25 min',
+    btnColor:'#2A4A88',btnText:'Accept this task &#8594;',
+    href:'#'
+  },
+  trip:{
+    tag:'Distance &#183; Rate &#183; Time',tagBg:'rgba(90,154,60,0.12)',tagColor:'#2A6010',tagBorder:'rgba(90,154,60,0.25)',
+    title:'Plan a Trip Across Mathage',
+    sub:'A task from the village traveller',
+    desc:'Someone needs to travel across three regions of Mathage and return before sunset. You\'ll choose a route, calculate travel times at different speeds, manage a journey budget, and make sure the plan actually works.',
+    skills:['Rate','Distance','Time','Proportions'],
+    skillColor:'#2A6010',skillBg:'rgba(90,154,60,0.1)',skillBorder:'rgba(90,154,60,0.25)',
+    diff:'Medium',topics:'3',time:'20&#8211;25 min',
+    btnColor:'#2A5010',btnText:'Accept this task &#8594;',
+    href:'#'
+  }
+};
+
+function openModal(type){
+  var t=tasks[type];
+  var tag=document.getElementById('m-tag');
+  tag.innerHTML=t.tag;tag.style.background=t.tagBg;tag.style.color=t.tagColor;tag.style.border='1px solid '+t.tagBorder;
+  document.getElementById('m-title').textContent=t.title;
+  document.getElementById('m-sub').textContent=t.sub;
+  document.getElementById('m-desc').textContent=t.desc;
+  var sk=document.getElementById('m-skills');
+  sk.innerHTML=t.skills.map(function(s){
+    return '<span class="skill-tag" style="color:'+t.skillColor+';background:'+t.skillBg+';border-color:'+t.skillBorder+'">'+s+'</span>';
+  }).join('');
+  document.getElementById('m-diff').textContent=t.diff;
+  document.getElementById('m-topics').innerHTML=t.topics+' topics';
+  document.getElementById('m-time').innerHTML=t.time;
+  var btn=document.getElementById('m-btn');
+  btn.innerHTML=t.btnText;btn.style.background=t.btnColor;
+  btn.onclick=function(){window.location.href=t.href;};
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function handleOverlayClick(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
+function toggleSage(){document.getElementById('sage-bubble').classList.toggle('show');}
+function closeSage(){document.getElementById('sage-bubble').classList.remove('show');}
+
+function spawnPts(){
+  var c=document.getElementById('pts');
+  function one(){
+    var p=document.createElement('div');p.className='pt';
+    p.style.left=(Math.random()*100)+'%';
+    p.style.bottom=(Math.random()*60)+'%';
+    var sz=3+Math.random()*5;p.style.width=p.style.height=sz+'px';
+    p.style.background=Math.random()>.5?'#F0D060':'#C8A84B';
+    p.style.animationDelay=(Math.random()*2)+'s';
+    p.style.animationDuration=(3+Math.random()*2)+'s';
+    c.appendChild(p);
+    setTimeout(function(){p.remove();one();},5000+Math.random()*2000);
+  }
+  for(var i=0;i<10;i++) one();
+}
+spawnPts();
+</script>
+
+<script>
+  document.body.dataset.sageMode = 'float';
+</script>
+<script src="sage-component.js"></script>
+
+
+<script>
+// SAGE RULE BUILD MAIN
+// Show Sage tip after 20s on page
+setTimeout(function(){
+  if (window.SAGE && window.SAGE.speak) {
+    window.SAGE.speak("Each task uses real math. Pick whichever feels interesting to you.");
+  }
+}, 20000);
+</script>
+</body>
+</html>

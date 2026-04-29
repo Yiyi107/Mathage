@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathage &#8212; Chapter 3: The Ratio of Paths</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Source+Sans+3:wght@300;400;600&family=Caveat:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0E18;
+  --panel:rgba(10,14,28,0.80);
+  --panel2:rgba(14,18,36,0.88);
+  --cream:#FDFAF4;
+  --gold:#C8A84B;--goldl:#E8D090;--goldp:#F7EDD4;
+  --sage:#5A8A5A;--sagel:#A8D4A8;
+  --purple:#7A5AAA;--purplel:#C0A8E8;--purplep:#EAE0F8;
+  --moon:#D4E0F8;--moonl:#EAF0FF;
+  --glow:#F0E060;
+  --txti:rgba(253,250,244,0.92);--txtm:rgba(253,250,244,0.52);
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --r:16px;
+}
+html,body{height:100%;margin:0;padding:0;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg);display:flex;flex-direction:column;height:100vh;color:var(--txti)}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px;flex-shrink:0;background:rgba(10,14,28,0.94);border-bottom:1px solid rgba(192,168,232,0.14);z-index:50}
+.nav-logo{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--goldl);display:flex;align-items:center;gap:7px;text-decoration:none}
+.logo-dot{width:18px;height:18px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center}
+.logo-seed{width:7px;height:7px;border-radius:50%;background:#B8DFA0}
+.nav-title{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--txtm)}
+.nav-right{display:flex;gap:10px}
+.nav-btn{font-family:var(--sans);font-size:12px;color:var(--txtm);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all .2s}
+.nav-btn:hover{background:rgba(255,255,255,0.1);color:var(--txti)}
+
+.scene{flex:1;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.bg{position:absolute;inset:0;overflow:hidden}
+.bg img{width:100%;height:100%;object-fit:cover;object-position:center center;transition:filter 1.2s ease}
+.bg img.bright{filter:brightness(1.18) saturate(1.1)}
+.overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,14,28,0.06) 0%,rgba(10,14,28,0.0) 30%,rgba(10,14,28,0.52) 70%,rgba(10,14,28,0.92) 100%);transition:background 1s}
+
+.hud-top{position:absolute;top:12px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:20;min-width:180px}
+.hud-card{background:var(--panel);border:1px solid rgba(192,168,232,0.16);border-radius:10px;padding:10px 14px;backdrop-filter:blur(8px)}
+.hud-label{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txtm);margin-bottom:6px}
+.prog-track{width:100%;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(to right,var(--purple),var(--goldl));border-radius:3px;transition:width .6s ease}
+.task-txt{font-family:var(--serif);font-size:12px;font-style:italic;color:var(--purplel);line-height:1.4}
+.persist-row{display:flex;align-items:center;gap:8px}
+.orbs{display:flex;gap:4px}
+.orb{width:14px;height:14px;border-radius:50%;background:rgba(240,224,96,0.1);border:1px solid rgba(240,224,96,0.2);transition:all .4s}
+.orb.lit{background:var(--glow);border-color:var(--gold);box-shadow:0 0 6px rgba(240,224,96,0.45)}
+.plbl{font-family:var(--sans);font-size:11px;color:var(--txtm)}
+
+.hud-float{position:absolute;bottom:200px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:20}
+.fbtn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all .2s;backdrop-filter:blur(8px);font-size:18px;position:relative}
+.fbtn:hover{background:rgba(20,18,44,0.96);border-color:rgba(192,168,232,0.4);transform:scale(1.06)}
+.ftip{position:absolute;right:52px;top:50%;transform:translateY(-50%);background:rgba(10,14,28,0.94);border:1px solid rgba(192,168,232,0.2);border-radius:6px;padding:4px 10px;font-family:var(--sans);font-size:11px;color:var(--purplel);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
+.fbtn:hover .ftip{opacity:1}
+
+.dlg-area{position:relative;z-index:10;width:100%;padding:0 20px 16px}
+.dlg-box{background:var(--panel2);border:1px solid rgba(192,168,232,0.16);border-radius:var(--r);padding:20px 24px 16px;backdrop-filter:blur(16px);max-width:860px;margin:0 auto}
+.spk{font-family:var(--serif);font-size:12px;font-weight:600;font-style:italic;color:var(--sagel);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.spk-dot{width:6px;height:6px;border-radius:50%;background:var(--sage)}
+.spk.narr .spk-dot{background:rgba(200,168,75,0.5)}
+.spk.narr{color:rgba(232,208,144,0.7)}
+.dlg-txt{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--txti);line-height:1.65;min-height:44px}
+.dlg-cont{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:12px}
+.btn{font-family:var(--sans);font-size:13px;font-weight:600;border-radius:20px;padding:7px 20px;cursor:pointer;transition:all .2s;border:none}
+.btn.ghost{color:var(--purplel);background:rgba(192,168,232,0.1);border:1px solid rgba(192,168,232,0.22)}
+.btn.ghost:hover{background:rgba(192,168,232,0.2)}
+.btn.primary{background:var(--sage);color:var(--cream)}
+.btn.primary:hover{background:#4A7A4A}
+.btn.purple{background:var(--purple);color:var(--cream)}
+.btn.purple:hover{background:#6A4A9A}
+
+/* set cards */
+.sets-grid{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap}
+.set-card{
+  flex:1;min-width:120px;
+  background:rgba(255,255,255,0.05);
+  border:1.5px solid rgba(192,168,232,0.18);
+  border-radius:12px;padding:14px 12px;text-align:center;
+  cursor:pointer;transition:all .22s;position:relative;
+  user-select:none;
+}
+.set-card:hover{background:rgba(192,168,232,0.1);border-color:rgba(192,168,232,0.38)}
+.set-card.selected{background:rgba(122,90,170,0.25);border-color:var(--purple);box-shadow:0 0 14px rgba(122,90,170,0.2)}
+.set-card.correct-mark{border-color:var(--sage);background:rgba(90,138,90,0.18)}
+.set-card.wrong-mark{border-color:rgba(200,80,60,0.5);background:rgba(200,80,60,0.1)}
+.set-id{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txtm);margin-bottom:6px}
+.set-nums{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--goldl);margin-bottom:4px}
+.set-ratio{font-family:var(--sans);font-size:11px;color:var(--txtm)}
+.set-check{position:absolute;top:8px;right:10px;font-size:14px;opacity:0;transition:opacity .2s}
+.set-card.selected .set-check{opacity:1}
+
+/* input */
+.inp-wrap{display:flex;align-items:center;gap:12px;margin:12px 0}
+.inp-group{flex:1;text-align:center}
+.inp-lbl{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txtm);margin-bottom:5px}
+.inp-group input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:9px;font-family:var(--serif);font-size:22px;font-weight:600;color:var(--goldl);text-align:center;outline:none;transition:border .2s}
+.inp-group input:focus{border-color:rgba(192,168,232,0.5)}
+.inp-fixed{font-family:var(--serif);font-size:22px;font-weight:600;color:rgba(232,208,144,0.5);text-align:center;flex:1}
+.inp-sep{font-family:var(--serif);font-size:20px;color:rgba(200,180,240,0.28);padding-bottom:4px}
+
+.fb{font-family:var(--serif);font-size:13px;font-style:italic;border-radius:8px;padding:8px 14px;margin-top:8px;text-align:center;opacity:0;transition:opacity .3s;line-height:1.4}
+.fb.show{opacity:1}
+.fb.wrong{background:rgba(200,70,50,0.13);color:#F0A090;border:1px solid rgba(200,70,50,0.2)}
+.fb.close{background:rgba(200,168,75,0.11);color:var(--goldl);border:1px solid rgba(200,168,75,0.18)}
+.fb.ok{background:rgba(90,138,90,0.16);color:var(--sagel);border:1px solid rgba(90,138,90,0.28)}
+
+.task-btns{display:flex;gap:10px;margin-top:10px}
+.tbtn{flex:1;font-family:var(--sans);font-size:13px;font-weight:600;border:none;border-radius:8px;padding:11px;cursor:pointer;transition:all .2s}
+.tbtn.p{background:var(--sage);color:var(--cream)}.tbtn.p:hover{background:#4A7A4A}
+.tbtn.s{background:rgba(255,255,255,0.07);color:var(--txtm);border:1px solid rgba(255,255,255,0.1)}.tbtn.s:hover{background:rgba(255,255,255,0.12)}
+.hint-txt{font-family:var(--serif);font-size:12px;font-style:italic;color:rgba(192,168,232,0.45);margin-top:10px;text-align:center;line-height:1.5}
+
+/* multiple choice */
+.mc-row{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.mc-btn{flex:1;min-width:80px;font-family:var(--serif);font-size:14px;font-style:italic;color:var(--moonl);background:rgba(30,28,60,0.55);border:1px solid rgba(192,168,232,0.18);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s;text-align:center}
+.mc-btn:hover{background:rgba(60,50,110,0.65);border-color:rgba(192,168,232,0.42)}
+.mc-btn.sel{background:rgba(122,90,170,0.35);border-color:var(--purple)}
+
+/* sage bubble */
+.sage-bubble{position:absolute;bottom:200px;right:72px;max-width:260px;background:rgba(14,14,36,0.95);border:1px solid rgba(168,212,168,0.22);border-radius:14px;padding:12px 16px;z-index:40;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;transform:translateY(6px);backdrop-filter:blur(12px)}
+.sage-bubble.show{opacity:1;pointer-events:all;transform:translateY(0)}
+.sb-txt{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--sagel);line-height:1.55;margin-bottom:10px}
+.sb-btns{display:flex;gap:6px;flex-wrap:wrap}
+.sb-btn{font-family:var(--sans);font-size:11px;font-weight:600;background:rgba(90,138,90,0.16);border:1px solid rgba(90,138,90,0.28);border-radius:20px;padding:4px 10px;cursor:pointer;color:var(--sagel);transition:all .15s}
+.sb-btn:hover{background:rgba(90,138,90,0.3)}
+
+/* ref */
+.ref-q{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--txti);margin-bottom:8px;line-height:1.5}
+.ref-choices{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.rc{font-family:var(--sans);font-size:13px;color:var(--txti);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .2s}
+.rc:hover,.rc.sel{background:rgba(122,90,170,0.22);border-color:rgba(192,168,232,0.35)}
+.ref-ta{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:8px;padding:10px 14px;font-family:var(--serif);font-size:13px;color:var(--txti);resize:none;outline:none;min-height:52px;line-height:1.5;margin-bottom:12px}
+
+/* succ overlay */
+.succ-ov{display:none;position:absolute;inset:0;z-index:50;background:rgba(8,8,20,0.62);align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.succ-ov.show{display:flex}
+.succ-card{background:rgba(12,12,28,0.98);border:1.5px solid rgba(192,168,232,0.28);border-radius:20px;padding:30px 34px;max-width:400px;width:90%;text-align:center}
+.succ-glow{font-size:26px;margin-bottom:10px;letter-spacing:6px;color:var(--goldl)}
+.succ-title{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--goldl);margin-bottom:6px}
+.succ-sub{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--sagel);margin-bottom:18px;line-height:1.55}
+.succ-badges{display:flex;justify-content:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.bdg{background:rgba(192,168,232,0.08);border:1px solid rgba(192,168,232,0.18);border-radius:8px;padding:8px 12px;text-align:center}
+.bdg-v{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--goldl)}
+.bdg-l{font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px}
+.succ-btn{width:100%;font-family:var(--sans);font-size:14px;font-weight:600;border:none;border-radius:8px;padding:11px;cursor:pointer;transition:all .2s;margin-top:6px}
+.succ-btn.p{background:var(--sage);color:var(--cream)}.succ-btn.p:hover{background:#4A7A4A}
+.succ-btn.g{background:rgba(255,255,255,0.07);color:var(--txtm);border:1px solid rgba(255,255,255,0.1)}
+
+.particles{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+.pt{position:absolute;border-radius:50%;opacity:0;animation:fup 2.4s ease-out forwards}
+@keyframes fup{0%{opacity:0;transform:translateY(0) scale(0)}20%{opacity:.75}100%{opacity:0;transform:translateY(-120px) scale(.2)}}
+.fade-in{animation:fi .5s ease forwards}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.screen{display:none}.screen.active{display:flex;flex-direction:column;height:100%}
+@keyframes sageFloat{0%,100%{transform:translateY(0px)}50%{transform:translateY(-8px)}}
+</style>
+<link rel="stylesheet" href="../mobile.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="window.location.href='../index.html'" style="cursor:pointer"><img src="../images/logo.png" alt="Mathage" style="height:36px;width:auto;display:block;object-fit:contain;">
+  </div>
+  <div class="nav-title">Story 1 &nbsp;&#183;&nbsp; Chapter 3: The Ratio of Paths</div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="saveProgress()">Save</button>
+    <button class="nav-btn" onclick="exitChapter()">Exit</button>
+  </div>
+</nav>
+
+<!-- ════ SCREEN 1 — Narrative ════ -->
+<div class="screen active" id="s1">
+  <div class="scene">
+    <div class="bg"><img src="../images/forest-bg.png" alt="glowing forest path" id="bg-img"><div class="overlay"></div></div>
+    <div class="particles" id="p1"></div>
+    <div class="hud-top">
+      <div class="hud-card"><div class="hud-label">Chapter Progress</div><div class="prog-track"><div class="prog-fill" style="width:6%"></div></div></div>
+      <div class="hud-card"><div class="hud-label">Current Task</div><div class="task-txt">The light grows still&#8230;</div></div>
+    </div>
+    <div class="dlg-area fade-in">
+      <div class="dlg-box">
+        <div style="text-align:center;margin-bottom:14px">
+          <div style="font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--txtm);margin-bottom:7px">Story 1 &#183; The Ratio of Light</div>
+          <div style="font-family:var(--serif);font-size:25px;font-weight:600;color:var(--goldl);margin-bottom:4px">Chapter 3</div>
+          <div style="font-family:var(--serif);font-size:16px;font-style:italic;color:var(--txti);margin-bottom:10px">The Ratio of Paths</div>
+          <div style="width:48px;height:1px;background:rgba(192,168,232,0.22);margin:0 auto"></div>
+        </div>
+        <div class="spk narr"><div class="spk-dot"></div>Narration</div>
+        <div class="dlg-txt" id="s1-txt">The light slowly grows quiet. On the ground, faint traces of old paths are visible&#8230; but they have blurred.</div>
+        <div class="dlg-cont">
+          <button class="btn ghost" onclick="window.location.href='chapter-ratios-2.html'">Back to Chapter 2</button>
+          <button class="btn primary" onclick="adv1()">Continue &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 2 — Concept Setup ════ -->
+<div class="screen" id="s2">
+  <div class="scene">
+    <div class="bg"><img src="../images/forest-bg.png" alt="forest"><div class="overlay"></div></div>
+    <div class="hud-top">
+      <div class="hud-card"><div class="hud-label">Chapter Progress</div><div class="prog-track"><div class="prog-fill" style="width:22%"></div></div></div>
+      <div class="hud-card">
+        <div class="hud-label">Persistence</div>
+        <div class="persist-row"><div class="orbs"><div class="orb" id="o1"></div><div class="orb" id="o2"></div><div class="orb" id="o3"></div><div class="orb" id="o4"></div><div class="orb" id="o5"></div></div><div class="plbl" id="pl">0 moments</div></div>
+      </div>
+    </div>
+    <div class="hud-float">
+      <div class="fbtn" onclick="toggleSage()"><span>&#9784;</span><div class="ftip">Ask Sage</div></div>
+    </div>
+    <div class="sage-bubble" id="sb">
+      <div class="sb-txt" id="sb-txt">Look at how Light and Shadow compare in each set.</div>
+      <div class="sb-btns">
+        <button class="sb-btn" onclick="sageHint2()">Another hint</button>
+        <button class="sb-btn" onclick="closeSage()">Let me try</button>
+      </div>
+    </div>
+    <div class="dlg-area fade-in">
+      <div class="dlg-box">
+        <div class="spk"><div class="spk-dot"></div>Sage</div>
+        <div class="dlg-txt">These are different ways the world once held balance. Some of them still work. Some&#8230; no longer do.</div>
+        <div class="sets-grid" id="sets-grid">
+          <div class="set-card" id="card-A" onclick="toggleCard('A')">
+            <div class="set-id">Set A</div>
+            <div class="set-nums">8 : 4</div>
+            <div class="set-ratio">Light : Shadow</div>
+            <div class="set-check">&#10003;</div>
+          </div>
+          <div class="set-card" id="card-B" onclick="toggleCard('B')">
+            <div class="set-id">Set B</div>
+            <div class="set-nums">10 : 5</div>
+            <div class="set-ratio">Light : Shadow</div>
+            <div class="set-check">&#10003;</div>
+          </div>
+          <div class="set-card" id="card-C" onclick="toggleCard('C')">
+            <div class="set-id">Set C</div>
+            <div class="set-nums">9 : 4</div>
+            <div class="set-ratio">Light : Shadow</div>
+            <div class="set-check">&#10003;</div>
+          </div>
+        </div>
+        <div class="fb" id="fb1"></div>
+        <div class="task-btns">
+          <button class="tbtn s" onclick="toggleSage()">Ask Sage</button>
+          <button class="tbtn p" onclick="checkSets()">Confirm Selection</button>
+        </div>
+        <div class="hint-txt">Select all sets that keep the same balance as 6&#58;3</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 3 — Build Balance ════ -->
+<div class="screen" id="s3">
+  <div class="scene">
+    <div class="bg"><img src="../images/forest-bg.png" alt="forest"><div class="overlay"></div></div>
+    <div class="hud-top">
+      <div class="hud-card"><div class="hud-label">Chapter Progress</div><div class="prog-track"><div class="prog-fill" style="width:55%"></div></div></div>
+      <div class="hud-card">
+        <div class="hud-label">Persistence</div>
+        <div class="persist-row"><div class="orbs"><div class="orb" id="o2-1"></div><div class="orb" id="o2-2"></div><div class="orb" id="o2-3"></div><div class="orb" id="o2-4"></div><div class="orb" id="o2-5"></div></div><div class="plbl" id="pl2">0 moments</div></div>
+      </div>
+    </div>
+    <div class="hud-float">
+      <div class="fbtn" onclick="toggleSage2()"><span>&#9784;</span><div class="ftip">Ask Sage</div></div>
+    </div>
+    <div class="sage-bubble" id="sb2">
+      <div class="sb-txt" id="sb2-txt">The balance is 2:1 &#8212; Light is always twice Shadow. If Light is 12, what must Shadow be?</div>
+      <div class="sb-btns">
+        <button class="sb-btn" onclick="closeSage2()">Let me try</button>
+      </div>
+    </div>
+    <div class="dlg-area fade-in">
+      <div class="dlg-box">
+        <div class="spk"><div class="spk-dot"></div>Sage</div>
+        <div class="dlg-txt" style="margin-bottom:14px">Can you rebuild the same balance? It does not have to look the same.</div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:12px;border:1px solid rgba(192,168,232,0.1);text-align:center">
+          <div style="font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txtm);margin-bottom:6px">Original Balance</div>
+          <div style="font-family:var(--serif);font-size:22px;font-weight:600;color:rgba(232,208,144,0.6)">6 : 3</div>
+        </div>
+        <div class="inp-wrap">
+          <div class="inp-group"><div class="inp-lbl">Light</div><div class="inp-fixed">12</div></div>
+          <div class="inp-sep">&#58;</div>
+          <div class="inp-group"><div class="inp-lbl">Shadow</div><input type="number" id="inp-shadow" placeholder="?" min="0.5" max="99" step="0.5"></div>
+        </div>
+        <div class="fb" id="fb2"></div>
+        <div class="task-btns">
+          <button class="tbtn s" onclick="toggleSage2()">Ask Sage</button>
+          <button class="tbtn p" onclick="checkBuild()">Test My Idea</button>
+        </div>
+        <div class="hint-txt">&#8220;Many answers can work &#8212; think about the relationship.&#8221;</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 4 — Multiple Answers ════ -->
+<div class="screen" id="s4">
+  <div class="scene">
+    <div class="bg"><img src="../images/forest-bg.png" alt="forest"><div class="overlay"></div></div>
+    <div class="hud-top">
+      <div class="hud-card"><div class="hud-label">Chapter Progress</div><div class="prog-track"><div class="prog-fill" style="width:72%"></div></div></div>
+    </div>
+    <div class="dlg-area fade-in">
+      <div class="dlg-box">
+        <div class="spk"><div class="spk-dot"></div>Sage</div>
+        <div class="dlg-txt" style="margin-bottom:16px">Can there be more than one correct answer?</div>
+        <div class="mc-row">
+          <button class="mc-btn" onclick="answerMultiple('yes',this)">Yes</button>
+          <button class="mc-btn" onclick="answerMultiple('no',this)">No</button>
+          <button class="mc-btn" onclick="answerMultiple('unsure',this)">Not sure</button>
+        </div>
+        <div class="fb" id="fb3" style="margin-top:4px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 5 — Reflection ════ -->
+<div class="screen" id="s5">
+  <div class="scene">
+    <div class="bg"><img src="../images/forest-bg.png" alt="forest"><div class="overlay"></div></div>
+    <div class="hud-top">
+      <div class="hud-card"><div class="hud-label">Chapter Progress</div><div class="prog-track"><div class="prog-fill" style="width:88%"></div></div></div>
+    </div>
+    <div class="dlg-area fade-in">
+      <div class="dlg-box">
+        <div class="spk"><div class="spk-dot"></div>Reflection</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div class="ref-q">How did you decide which sets were balanced?</div>
+            <div class="ref-choices" id="ref1">
+              <button class="rc" onclick="selRef(this,'ref1')">I compared the relationship between the two numbers</button>
+              <button class="rc" onclick="selRef(this,'ref1')">I tried to find a pattern between all the sets</button>
+              <button class="rc" onclick="selRef(this,'ref1')">I guessed and checked</button>
+            </div>
+          </div>
+          <div>
+            <div class="ref-q">Did you try more than one idea?</div>
+            <div class="ref-choices" id="ref2">
+              <button class="rc" onclick="selRef(this,'ref2');setTried(true)">Yes &#8212; I explored a few different values</button>
+              <button class="rc" onclick="selRef(this,'ref2');setTried(false)">No &#8212; I found one answer and stopped</button>
+            </div>
+          </div>
+          <textarea class="ref-ta" placeholder="Anything else you noticed&#8230;"></textarea>
+          <button class="tbtn p" onclick="goS('s6')">Save reflection &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 6 — Chapter End ════ -->
+<div class="screen" id="s6">
+  <div class="scene">
+    <div class="bg"><img src="../images/forest-bg.png" alt="forest" id="bg-end"><div class="overlay" id="ov-end" style="background:linear-gradient(to bottom,rgba(10,14,28,0.0) 0%,rgba(10,14,28,0.0) 25%,rgba(10,14,28,0.45) 68%,rgba(10,14,28,0.88) 100%)"></div></div>
+    <div class="particles" id="p6"></div>
+    <div class="hud-top">
+      <div class="hud-card"><div class="hud-label">Chapter Progress</div><div class="prog-track"><div class="prog-fill" style="width:100%"></div></div><div style="font-family:var(--sans);font-size:10px;color:var(--sagel);margin-top:4px">Complete</div></div>
+    </div>
+    <div class="dlg-area fade-in">
+      <div class="dlg-box" style="text-align:center">
+        <div style="font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--txtm);margin-bottom:8px">Chapter Complete</div>
+        <div style="font-family:var(--serif);font-size:21px;font-weight:600;color:var(--goldl);margin-bottom:14px">Chapter 3: The Ratio of Paths</div>
+        <div style="display:flex;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+          <div style="background:rgba(200,168,75,0.1);border:1px solid rgba(200,168,75,0.18);border-radius:8px;padding:8px 14px">
+            <div style="font-family:var(--serif);font-size:13px;font-weight:600;color:var(--goldl)">Identifying Ratios</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Concept explored</div>
+          </div>
+          <div style="background:rgba(90,138,90,0.1);border:1px solid rgba(90,138,90,0.18);border-radius:8px;padding:8px 14px">
+            <div style="font-family:var(--serif);font-size:13px;font-weight:600;color:var(--sagel)" id="end-p">0</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Persistence moments</div>
+          </div>
+          <div style="background:rgba(122,90,170,0.1);border:1px solid rgba(122,90,170,0.18);border-radius:8px;padding:8px 14px">
+            <div style="font-family:var(--serif);font-size:13px;font-weight:600;color:var(--purplel)">Saved</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Reflection in Journey</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06)">
+          <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--sagel);line-height:1.65">&#8220;The world is becoming clearer.<br>You are starting to see patterns&#8230; not just numbers.<br><span style="color:var(--txtm)">That is how Mathage works.</span>&#8221;</div>
+          <div style="font-family:var(--sans);font-size:11px;color:var(--txtm);margin-top:6px">&#8212; Sage</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="tbtn p" style="width:100%" onclick="alert('Chapter 4 is coming soon!')">Continue to Chapter 4 &#8594;</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn ghost" style="flex:1;justify-content:center;display:flex" onclick="window.location.href='../story.html'">Story Map</button>
+            <button class="btn ghost" style="flex:1;justify-content:center;display:flex">View My Journey</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="succ-ov" id="succ">
+  <div class="succ-card">
+    <div class="succ-glow">&#10022; &#10022; &#10022;</div>
+    <div class="succ-title" id="succ-t">The path holds steady.</div>
+    <div class="succ-sub" id="succ-s">&#8220;The world recognizes the relationship, not the size.&#8221; &#8212; Sage</div>
+    <div class="succ-badges">
+      <div class="bdg"><div class="bdg-v">+1</div><div class="bdg-l">Persistence Light</div></div>
+      <div class="bdg"><div class="bdg-v">+1</div><div class="bdg-l">Memory saved</div></div>
+    </div>
+    <button class="succ-btn p" id="succ-next" onclick="closeSucc()">Continue &#8594;</button>
+  </div>
+</div>
+
+<script>
+var state={persist:0,oc1:0,oc2:0,sl:0,tried:false,attempts1:0,attempts2:0};
+var s1i=0;
+var s1dlg=[
+  'The light slowly grows quiet. On the ground, faint traces of old paths are visible&#8230; but they have blurred.',
+  'The world is no longer breaking. But it is not moving forward either. Something is missing.'
+];
+
+function adv1(){
+  s1i++;
+  if(s1i>=s1dlg.length){goS('s2');spawnP('p1');return;}
+  var el=document.getElementById('s1-txt');
+  el.innerHTML=s1dlg[s1i];
+  if(s1i===1){
+    document.querySelector('#s1 .spk').className='spk';
+    document.querySelector('#s1 .spk-dot').style.background='var(--sage)';
+    document.querySelector('#s1 .spk').childNodes[1].textContent='Sage';
+  }
+}
+
+function goS(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+}
+
+var sel={A:false,B:false,C:false};
+function toggleCard(id){
+  sel[id]=!sel[id];
+  document.getElementById('card-'+id).classList.toggle('selected',sel[id]);
+}
+
+function checkSets(){
+  var fb=document.getElementById('fb1');
+  var hasA=sel.A,hasB=sel.B,hasC=sel.C;
+  if(!hasA&&!hasB&&!hasC){
+    fb.textContent='Select at least one set first.';
+    fb.className='fb show wrong';return;
+  }
+  addP('1');
+  state.attempts1++;
+  var correctOnly=hasA&&hasB&&!hasC;
+  if(correctOnly){
+    document.getElementById('card-A').classList.add('correct-mark');
+    document.getElementById('card-B').classList.add('correct-mark');
+    fb.innerHTML='These feel steady. The relationship stayed the same&#8230; even though the numbers changed.';
+    fb.className='fb show ok';
+    document.getElementById('succ-t').textContent='The paths align.';
+    document.getElementById('succ-s').innerHTML='&#8220;These feel steady. The relationship stayed the same&#8230; even as the numbers changed.&#8221; &#8212; Sage';
+    document.getElementById('succ-next').onclick=function(){closeSucc();goS('s3');};
+    setTimeout(function(){document.getElementById('succ').classList.add('show');
+    if (window.SAGE) setTimeout(function(){ window.SAGE.awardCoins(10, 'Paths aligned! +10 coins'); }, 800);},700);
+  } else if(hasC){
+    if(hasC&&!hasA&&!hasB){
+      document.getElementById('card-C').classList.add('wrong-mark');
+    }
+    fb.innerHTML='This one feels slightly different. The balance shifted&#8230; just a little. Try again.';
+    fb.className='fb show wrong';
+    setTimeout(function(){ showSage3Rule('wrong'); }, 1200);
+    if(state.attempts1>=2) setTimeout(function(){document.getElementById('sb').classList.add('show');},500);
+  } else {
+    fb.innerHTML='You found some balanced sets. Are there any others? Or any that do not quite fit?';
+    fb.className='fb show close';
+  }
+}
+
+function checkBuild(){
+  var s=parseFloat(document.getElementById('inp-shadow').value);
+  var fb=document.getElementById('fb2');
+  if(!s||isNaN(s)){fb.textContent='Enter a Shadow value.';fb.className='fb show wrong';return;}
+  addP('2');
+  state.attempts2++;
+  var ratio=12/s;
+  var target=2;
+  var diff=Math.abs(ratio-target);
+  if(diff<0.01){
+    fb.textContent='Yes&#8230; this works. The world recognizes the relationship, not the size.';
+    fb.className='fb show ok';
+    document.getElementById('bg-img') && (document.getElementById('bg-img').classList.add('bright'));
+    document.getElementById('succ-t').textContent='Balance rebuilt.';
+    document.getElementById('succ-s').innerHTML='&#8220;Yes&#8230; this works. The world recognizes the relationship, not the size.&#8221; &#8212; Sage';
+    document.getElementById('succ-next').onclick=function(){closeSucc();goS('s4');};
+    setTimeout(function(){document.getElementById('succ').classList.add('show');spawnP('p6');},700);
+  } else if(diff<0.7){
+    fb.textContent='The structure is not stable yet. Getting closer &#8212; try adjusting.';
+    fb.className='fb show close';
+    if(state.attempts2>=2) setTimeout(function(){document.getElementById('sb2').classList.add('show');},500);
+  } else {
+    fb.textContent='The structure is not stable yet. Try adjusting both parts of the relationship.';
+    fb.className='fb show wrong';
+    if(state.attempts2>=2) setTimeout(function(){document.getElementById('sb2').classList.add('show');},500);
+  }
+}
+
+function answerMultiple(ans, el){
+  document.querySelectorAll('.mc-btn').forEach(function(b){b.classList.remove('sel')});
+  el.classList.add('sel');
+  var fb=document.getElementById('fb3');
+  fb.textContent='In Mathage, balance can appear in many forms. Many different pairs can hold the same relationship.';
+  fb.className='fb show ok';
+  addP('2');
+  setTimeout(function(){goS('s5');},2000);
+}
+
+var triedMore=false;
+function setTried(v){triedMore=v;}
+
+function selRef(el,gid){
+  document.querySelectorAll('#'+gid+' .rc').forEach(function(b){b.classList.remove('sel')});
+  el.classList.add('sel');
+}
+
+function addP(which){
+  state.persist++;
+  var key=which==='2'?'oc2':'oc1';
+  var pfx=which==='2'?'o2-':'o';
+  var lblId=which==='2'?'pl2':'pl';
+  if(state[key]<5){
+    state[key]++;
+    var o=document.getElementById(pfx+state[key]);
+    if(o)o.classList.add('lit');
+  }
+  var lbl=document.getElementById(lblId);
+  if(lbl)lbl.textContent=state.persist+(state.persist===1?' moment':' moments');
+  document.getElementById('end-p').textContent=state.persist;
+}
+
+
+function closeSage(){document.getElementById('sb').classList.remove('show');}
+function sageHint2(){
+  state.sl++;
+  var t=document.getElementById('sb-txt');
+  if(state.sl===1)t.textContent='Try thinking: how many times bigger is Light than Shadow in each set?';
+  else t.textContent='In Set A: 8&#247;4=2. In Set B: 10&#247;5=2. In Set C: 9&#247;4=2.25. Do you see the difference?';
+  addP('1');
+}
+function toggleSage2(){document.getElementById('sb2').classList.toggle('show');addP('2');}
+function closeSage2(){document.getElementById('sb2').classList.remove('show');}
+
+function closeSucc(){document.getElementById('succ').classList.remove('show');}
+
+function spawnP(id){
+  var c=document.getElementById(id);
+  if(!c)return;
+  for(var i=0;i<12;i++){
+    var p=document.createElement('div');
+    p.className='pt';
+    p.style.left=(10+Math.random()*80)+'%';
+    p.style.bottom=(10+Math.random()*22)+'%';
+    p.style.width=p.style.height=(4+Math.random()*5)+'px';
+    p.style.background=Math.random()>.5?'#F0E060':'#C0A8E8';
+    p.style.animationDelay=(Math.random()*.7)+'s';
+    c.appendChild(p);
+    setTimeout(function(el){el.remove();},3000,p);
+  }
+}
+
+function saveProgress(){alert('Progress saved.');}
+function exitChapter(){if(confirm('Exit? Progress will be saved.'))window.location.href='../story.html';}
+
+spawnP('p1');
+
+// SAGE RULES — Chapter 3
+function showSage3Rule(trigger) {
+  var msg = '';
+  if (trigger === 'ask') msg = "Look at how Light and Shadow compare in each set. How many times bigger is one than the other?";
+  else if (trigger === 'wrong') msg = "This one feels slightly different. Try dividing Light by Shadow in each set — what do you notice?";
+  else if (trigger === 'idle') msg = "You can slow down. Compare the relationship between the two numbers in each set.";
+  if (!msg) return;
+  var b = document.getElementById('sb');
+  if (b) {
+    var t = document.getElementById('sb-txt');
+    if (t) t.textContent = msg;
+    b.classList.add('show');
+    setTimeout(function(){ b.classList.remove('show'); }, 5000);
+  }
+}
+function toggleSage() {
+  addP('1');
+  fetch('/api/sage-hint', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      mode:'story', task:'ratio_paths', concept:'ratio',
+      goal:'identify equivalent ratios and build new balanced pairs',
+      attempts: state.attempts1||0,
+      student_action:'asked for hint',
+      hint_level:1,
+    })
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d&&d.message){
+      var b=document.getElementById('sb');
+      if(b){var t=document.getElementById('sb-txt');if(t)t.textContent=d.message;b.classList.add('show');setTimeout(function(){b.classList.remove('show');},6000);}
+    } else { showSage3Rule('ask'); }
+  }).catch(function(){ showSage3Rule('ask'); });
+}
+var sage3IdleTimer = setTimeout(function(){ showSage3Rule('idle'); }, 45000);
+document.addEventListener('input', function(){ clearTimeout(sage3IdleTimer); sage3IdleTimer = setTimeout(function(){ showSage3Rule('idle'); }, 45000); });
+
+</script>
+
+</body>
+</html>

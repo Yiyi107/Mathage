@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathage &#8212; Chapter 2: The Expanding Light</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Source+Sans+3:wght@300;400;600&family=Caveat:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-dark:#0D1520;
+  --panel:rgba(10,18,30,0.78);
+  --panel2:rgba(14,24,40,0.85);
+  --cream:#FDFAF4;--warm:#F5EDD8;
+  --gold:#C8A84B;--goldl:#E8D090;--goldp:#F7EDD4;
+  --sage-green:#5A8A5A;--sage-light:#A8D4A8;
+  --moon:#D4E8F8;--moonl:#EAF4FF;
+  --blue:#4A80C8;--bluel:#90C0F0;--bluep:#D0E8F8;
+  --glow:#F0E060;--glowblue:#80C8FF;
+  --txti:rgba(253,250,244,0.92);--txtm:rgba(253,250,244,0.55);
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --hand:'Caveat',cursive;
+  --radius:16px;
+}
+html,body{height:100%;margin:0;padding:0;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg-dark);display:flex;flex-direction:column;height:100vh;color:var(--txti)}
+
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:48px;flex-shrink:0;
+  background:rgba(10,18,30,0.92);
+  border-bottom:1px solid rgba(144,192,240,0.15);
+  z-index:50;
+}
+.nav-logo{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--goldl);display:flex;align-items:center;gap:7px;text-decoration:none}
+.logo-dot{width:18px;height:18px;border-radius:50%;background:var(--sage-green);display:flex;align-items:center;justify-content:center}
+.logo-seed{width:7px;height:7px;border-radius:50%;background:#B8DFA0}
+.nav-title{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--txtm)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.nav-btn{font-family:var(--sans);font-size:12px;color:var(--txtm);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all .2s}
+.nav-btn:hover{background:rgba(255,255,255,0.12);color:var(--txti)}
+
+.scene{flex:1;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.scene-bg{position:absolute;inset:0;overflow:hidden}
+.scene-bg img{width:100%;height:100%;object-fit:cover;object-position:center center;opacity:0.85}
+.scene-bg-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(13,21,32,0.08) 0%,rgba(13,21,32,0.0) 35%,rgba(13,21,32,0.55) 72%,rgba(13,21,32,0.90) 100%)}
+
+.hud-top{position:absolute;top:12px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:20;min-width:180px}
+.hud-card{background:var(--panel);border:1px solid rgba(144,192,240,0.18);border-radius:10px;padding:10px 14px;backdrop-filter:blur(8px)}
+.hud-label{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--txtm);margin-bottom:6px}
+.progress-track{width:100%;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(to right,var(--blue),var(--goldl));border-radius:3px;transition:width .6s ease}
+.task-text{font-family:var(--serif);font-size:12px;font-style:italic;color:var(--bluel);line-height:1.4}
+.persist-row{display:flex;align-items:center;gap:8px}
+.persist-orbs{display:flex;gap:4px}
+.orb{width:14px;height:14px;border-radius:50%;background:rgba(240,224,96,0.12);border:1px solid rgba(240,224,96,0.22);transition:all .4s}
+.orb.lit{background:var(--glow);border-color:var(--gold);box-shadow:0 0 6px rgba(240,224,96,0.5)}
+.persist-label{font-family:var(--sans);font-size:11px;color:var(--txtm)}
+
+.hud-float{position:absolute;bottom:200px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:20}
+.float-btn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid rgba(255,255,255,0.12);cursor:pointer;transition:all .2s;backdrop-filter:blur(8px);font-size:18px;position:relative}
+.float-btn:hover{background:rgba(20,36,60,0.95);border-color:rgba(144,192,240,0.4);transform:scale(1.06)}
+.float-tip{position:absolute;right:52px;top:50%;transform:translateY(-50%);background:rgba(10,18,30,0.92);border:1px solid rgba(144,192,240,0.2);border-radius:6px;padding:4px 10px;font-family:var(--sans);font-size:11px;color:var(--bluel);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
+.float-btn:hover .float-tip{opacity:1}
+
+.dialogue-area{position:relative;z-index:10;width:100%;padding:0 20px 16px}
+.dialogue-box{background:var(--panel2);border:1px solid rgba(144,192,240,0.18);border-radius:var(--radius);padding:20px 24px 16px;backdrop-filter:blur(16px);max-width:860px;margin:0 auto}
+.dialogue-speaker{font-family:var(--serif);font-size:12px;font-weight:600;font-style:italic;color:var(--sage-light);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.speaker-dot{width:6px;height:6px;border-radius:50%;background:var(--sage-green)}
+.dialogue-text{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--txti);line-height:1.65;min-height:44px}
+.dialogue-continue{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:12px}
+.btn-continue{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--bluel);background:rgba(144,192,240,0.1);border:1px solid rgba(144,192,240,0.25);border-radius:20px;padding:7px 20px;cursor:pointer;transition:all .2s}
+.btn-continue:hover{background:rgba(144,192,240,0.2);border-color:rgba(144,192,240,0.45)}
+.btn-continue.primary{background:var(--sage-green);border-color:var(--sage-green);color:var(--cream)}
+.btn-continue.primary:hover{background:#4A7A4A}
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.choice-btn{font-family:var(--serif);font-size:14px;font-weight:400;font-style:italic;color:var(--moonl);background:rgba(30,50,90,0.5);border:1px solid rgba(180,200,240,0.2);border-radius:10px;padding:10px 16px;cursor:pointer;transition:all .2s;text-align:left}
+.choice-btn:hover{background:rgba(50,80,140,0.65);border-color:rgba(180,200,240,0.4);transform:translateX(4px)}
+
+/* energy flow display */
+.energy-flow{
+  display:flex;align-items:center;justify-content:center;gap:20px;
+  background:rgba(255,255,255,0.04);border-radius:12px;
+  padding:16px;margin-bottom:16px;
+  border:1px solid rgba(144,192,240,0.12);
+}
+.energy-val{text-align:center}
+.energy-num{font-family:var(--serif);font-size:30px;font-weight:600}
+.energy-num.light-col{color:var(--goldl)}
+.energy-num.shadow-col{color:var(--bluel)}
+.energy-lbl{font-family:var(--sans);font-size:11px;color:var(--txtm);margin-top:2px}
+.energy-sep{font-family:var(--serif);font-size:22px;color:rgba(200,200,240,0.3)}
+.energy-status{
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  letter-spacing:0.6px;text-transform:uppercase;
+  padding:3px 10px;border-radius:50px;
+  background:rgba(240,160,80,0.15);color:#F0C080;
+  border:1px solid rgba(240,160,80,0.25);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+/* scale tool */
+.scale-tool{
+  background:rgba(255,255,255,0.04);border-radius:12px;
+  padding:16px;border:1px solid rgba(144,192,240,0.1);
+  margin-bottom:14px;
+}
+.scale-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.scale-label{font-family:var(--sans);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--txtm);width:52px;text-align:right;flex-shrink:0}
+.scale-track{flex:1;height:20px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;position:relative}
+.scale-fill{height:100%;border-radius:5px;transition:width .4s ease}
+.scale-fill.gold{background:linear-gradient(to right,#C8A030,#F0D060)}
+.scale-fill.blue{background:linear-gradient(to right,#3060A0,#60A0E0)}
+.scale-num{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--txti);width:28px;flex-shrink:0}
+.scale-multiplier-row{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.scale-mult-btn{
+  font-family:var(--sans);font-size:12px;font-weight:600;
+  background:rgba(144,192,240,0.1);border:1px solid rgba(144,192,240,0.2);
+  border-radius:20px;padding:5px 14px;cursor:pointer;color:var(--bluel);transition:all .2s;
+}
+.scale-mult-btn:hover,.scale-mult-btn.active{background:rgba(144,192,240,0.25);border-color:rgba(144,192,240,0.5)}
+
+/* input row */
+.input-row{display:flex;gap:16px;margin-bottom:10px;align-items:flex-end}
+.input-group{flex:1;text-align:center}
+.input-label{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;color:var(--txtm);margin-bottom:6px}
+.input-group input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px;font-family:var(--serif);font-size:22px;font-weight:600;color:var(--goldl);text-align:center;outline:none;transition:border .2s}
+.input-group input:focus{border-color:rgba(144,192,240,0.5)}
+.input-sep{font-family:var(--serif);font-size:20px;color:rgba(200,200,240,0.3);padding-bottom:10px}
+
+.feedback-bar{font-family:var(--serif);font-size:13px;font-style:italic;border-radius:8px;padding:8px 14px;margin-top:8px;text-align:center;opacity:0;transition:opacity .3s;line-height:1.4}
+.feedback-bar.show{opacity:1}
+.feedback-bar.wrong{background:rgba(220,100,60,0.15);color:#F0A888;border:1px solid rgba(220,100,60,0.2)}
+.feedback-bar.close{background:rgba(200,168,75,0.12);color:var(--goldl);border:1px solid rgba(200,168,75,0.2)}
+.feedback-bar.correct{background:rgba(90,138,90,0.18);color:var(--sage-light);border:1px solid rgba(90,138,90,0.3)}
+
+.task-btns{display:flex;gap:10px;margin-top:10px}
+.task-btn{flex:1;font-family:var(--sans);font-size:13px;font-weight:600;border:none;border-radius:8px;padding:11px;cursor:pointer;transition:all .2s}
+.task-btn.primary{background:var(--sage-green);color:var(--cream)}
+.task-btn.primary:hover{background:#4A7A4A}
+.task-btn.secondary{background:rgba(255,255,255,0.07);color:var(--txtm);border:1px solid rgba(255,255,255,0.1)}
+.task-btn.secondary:hover{background:rgba(255,255,255,0.12)}
+.task-hint{font-family:var(--serif);font-size:12px;font-style:italic;color:rgba(144,192,240,0.5);margin-top:10px;text-align:center;line-height:1.5}
+
+/* sage bubble */
+.sage-bubble{position:absolute;bottom:200px;right:72px;max-width:260px;background:rgba(14,28,44,0.94);border:1px solid rgba(168,212,168,0.25);border-radius:14px;padding:12px 16px;z-index:40;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;transform:translateY(6px);backdrop-filter:blur(12px)}
+.sage-bubble.show{opacity:1;pointer-events:all;transform:translateY(0)}
+.sage-bubble-txt{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--sage-light);line-height:1.55;margin-bottom:10px}
+.sage-bubble-btns{display:flex;gap:6px;flex-wrap:wrap}
+.sage-bubble-btn{font-family:var(--sans);font-size:11px;font-weight:600;background:rgba(90,138,90,0.18);border:1px solid rgba(90,138,90,0.3);border-radius:20px;padding:4px 10px;cursor:pointer;color:var(--sage-light);transition:all .15s}
+.sage-bubble-btn:hover{background:rgba(90,138,90,0.32)}
+
+/* constraint badge */
+.constraint-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(144,192,240,0.1);border:1px solid rgba(144,192,240,0.25);
+  border-radius:8px;padding:7px 14px;margin-bottom:12px;
+  font-family:var(--serif);font-size:14px;font-style:italic;color:var(--bluel);
+}
+
+/* success overlay */
+.success-overlay{display:none;position:absolute;inset:0;z-index:50;background:rgba(8,14,24,0.65);align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.success-overlay.show{display:flex}
+.success-card{background:rgba(12,20,36,0.97);border:1.5px solid rgba(144,192,240,0.3);border-radius:20px;padding:32px 36px;max-width:420px;width:90%;text-align:center}
+.success-glow{font-size:28px;margin-bottom:10px;letter-spacing:6px;color:var(--goldl)}
+.success-title{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--goldl);margin-bottom:6px}
+.success-sub{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--sage-light);margin-bottom:20px;line-height:1.55}
+.success-badges{display:flex;justify-content:center;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.badge{background:rgba(144,192,240,0.08);border:1px solid rgba(144,192,240,0.2);border-radius:8px;padding:9px 14px;text-align:center}
+.badge-val{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--goldl)}
+.badge-lbl{font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px}
+.success-btn{width:100%;font-family:var(--sans);font-size:14px;font-weight:600;border:none;border-radius:8px;padding:12px;cursor:pointer;transition:all .2s;margin-top:6px}
+.success-btn.primary{background:var(--sage-green);color:var(--cream)}
+.success-btn.primary:hover{background:#4A7A4A}
+.success-btn.sec{background:rgba(255,255,255,0.07);color:var(--txtm);border:1px solid rgba(255,255,255,0.1)}
+
+/* particles */
+.particles{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+.particle{position:absolute;border-radius:50%;opacity:0;animation:floatUp 2.5s ease-out forwards}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(0)}20%{opacity:.8}100%{opacity:0;transform:translateY(-130px) scale(0.2)}}
+.fade-in{animation:fadeIn .5s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column;height:100%}
+@keyframes sageFloat{0%,100%{transform:translateY(0px)}50%{transform:translateY(-8px)}}
+</style>
+<link rel="stylesheet" href="../mobile.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="window.location.href='../index.html'" style="cursor:pointer"><img src="../images/logo.png" alt="Mathage" style="height:36px;width:auto;display:block;object-fit:contain;">
+  </div>
+  <div class="nav-title">Story 1 &nbsp;&#183;&nbsp; Chapter 2: The Expanding Light</div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="saveProgress()">Save</button>
+    <button class="nav-btn" onclick="exitChapter()">Exit</button>
+  </div>
+</nav>
+
+<!-- ════ SCREEN 1 — Transition ════ -->
+<div class="screen active" id="screen-1">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/gate-bg.png" alt="expanding light gate">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="particles" id="p1"></div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:8%"></div></div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-label">Current Task</div>
+        <div class="task-text">The light is spreading&#8230;</div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--txtm);margin-bottom:8px">Story 1 &#183; The Ratio of Light</div>
+          <div style="font-family:var(--serif);font-size:26px;font-weight:600;color:var(--goldl);margin-bottom:4px">Chapter 2</div>
+          <div style="font-family:var(--serif);font-size:17px;font-style:italic;color:var(--txti);margin-bottom:12px">The Expanding Light</div>
+          <div style="width:50px;height:1px;background:rgba(144,192,240,0.25);margin:0 auto 12px"></div>
+        </div>
+        <div class="dialogue-speaker"><div class="speaker-dot"></div>Sage</div>
+        <div class="dialogue-text" id="dlg-1-txt">The balance is returning&#8230; but something is changing. The light is spreading too far.</div>
+        <div class="dialogue-continue">
+          <button class="btn-continue" onclick="window.location.href='chapter-ratios-1.html'">Back to Chapter 1</button>
+          <button class="btn-continue primary" id="btn-1" onclick="advDlg1()">Continue &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 2 — New Problem ════ -->
+<div class="screen" id="screen-2">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/gate-bg.png" alt="gate">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:22%"></div></div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-label">Persistence</div>
+        <div class="persist-row">
+          <div class="persist-orbs">
+            <div class="orb" id="o1"></div><div class="orb" id="o2"></div>
+            <div class="orb" id="o3"></div><div class="orb" id="o4"></div>
+            <div class="orb" id="o5"></div>
+          </div>
+          <div class="persist-label" id="plbl">0 moments</div>
+        </div>
+      </div>
+    </div>
+    <div class="hud-float">
+      <div class="float-btn" onclick="toggleSage()"><span>&#9784;</span><div class="float-tip">Ask Sage</div></div>
+      <div class="float-btn" onclick="toggleScaleTool()"><span>&#128202;</span><div class="float-tip">Scale tool</div></div>
+    </div>
+    <div class="sage-bubble" id="sage-bubble">
+      <div class="sage-bubble-txt" id="sage-txt">What happens if both parts change in the same way?</div>
+      <div class="sage-bubble-btns">
+        <button class="sage-bubble-btn" onclick="sageHint2()">Another hint</button>
+        <button class="sage-bubble-btn" onclick="closeSage()">Let me try</button>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box">
+        <div class="dialogue-speaker"><div class="speaker-dot"></div>Sage</div>
+        <div class="dialogue-text" id="dlg-2-txt">The gate is growing stronger. When it expands, the amounts change. But the balance must stay the same.</div>
+        <div class="energy-flow" style="margin-top:14px">
+          <div class="energy-val">
+            <div class="energy-num light-col">6</div>
+            <div class="energy-lbl">Light</div>
+          </div>
+          <div class="energy-sep">&#58;</div>
+          <div class="energy-val">
+            <div class="energy-num shadow-col">3</div>
+            <div class="energy-lbl">Shadow</div>
+          </div>
+          <div style="margin-left:12px">
+            <div class="energy-status">Energy expanding</div>
+          </div>
+        </div>
+
+        <div class="constraint-badge">&#10024; The energy doubles &#8212; what happens to the balance?</div>
+
+        <div class="scale-tool" id="scale-tool" style="display:none">
+          <div style="font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--txtm);margin-bottom:10px">Visual Scale Tool</div>
+          <div class="scale-row">
+            <div class="scale-label">Light</div>
+            <div class="scale-track"><div class="scale-fill gold" id="bar-l" style="width:50%"></div></div>
+            <div class="scale-num" id="sn-l">6</div>
+          </div>
+          <div class="scale-row">
+            <div class="scale-label">Shadow</div>
+            <div class="scale-track"><div class="scale-fill blue" id="bar-s" style="width:25%"></div></div>
+            <div class="scale-num" id="sn-s">3</div>
+          </div>
+          <div class="scale-multiplier-row">
+            <button class="scale-mult-btn" onclick="applyScale(0.5)">&#215;0.5</button>
+            <button class="scale-mult-btn" onclick="applyScale(1)" id="sm-1">&#215;1 (original)</button>
+            <button class="scale-mult-btn" onclick="applyScale(2)">&#215;2</button>
+            <button class="scale-mult-btn" onclick="applyScale(3)">&#215;3</button>
+          </div>
+          <div style="font-family:var(--serif);font-size:11px;font-style:italic;color:var(--txtm);text-align:center;margin-top:8px" id="scale-hint-txt">Original: 6 : 3 &#8212; try scaling up</div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <div class="input-label">Light</div>
+            <input type="number" id="inp-l" placeholder="?" min="0.5" max="999" step="0.5" oninput="liveUpdate()">
+          </div>
+          <div class="input-sep" style="padding-bottom:10px">&#58;</div>
+          <div class="input-group">
+            <div class="input-label">Shadow</div>
+            <input type="number" id="inp-s" placeholder="?" min="0.5" max="999" step="0.5" oninput="liveUpdate()">
+          </div>
+        </div>
+        <div class="feedback-bar" id="fb"></div>
+        <div class="task-btns">
+          <button class="task-btn secondary" onclick="toggleSage()">Ask Sage</button>
+          <button class="task-btn primary" onclick="testIdea1()">Test My Idea</button>
+        </div>
+        <div class="task-hint" id="task-hint-1">&#8220;What happens if everything doubles?&#8221;</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 3 — Second Challenge ════ -->
+<div class="screen" id="screen-3">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/gate-bg.png" alt="gate">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:62%"></div></div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-label">Persistence</div>
+        <div class="persist-row">
+          <div class="persist-orbs">
+            <div class="orb" id="o2-1"></div><div class="orb" id="o2-2"></div>
+            <div class="orb" id="o2-3"></div><div class="orb" id="o2-4"></div>
+            <div class="orb" id="o2-5"></div>
+          </div>
+          <div class="persist-label" id="plbl2">0 moments</div>
+        </div>
+      </div>
+    </div>
+    <div class="hud-float">
+      <div class="float-btn" onclick="toggleSage2()"><span>&#9784;</span><div class="float-tip">Ask Sage</div></div>
+    </div>
+    <div class="sage-bubble" id="sage-bubble-2">
+      <div class="sage-bubble-txt" id="sage-txt-2">Try multiplying both numbers by the same value. What stays the same?</div>
+      <div class="sage-bubble-btns">
+        <button class="sage-bubble-btn" onclick="sageHint3()">Another hint</button>
+        <button class="sage-bubble-btn" onclick="closeSage2()">Let me try</button>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box">
+        <div class="dialogue-speaker"><div class="speaker-dot"></div>Sage</div>
+        <div class="dialogue-text">Now the energy is pulling back. The gate needs less. Can you find the reduced balance?</div>
+        <div class="energy-flow" style="margin-top:14px">
+          <div class="energy-val">
+            <div class="energy-num light-col">6</div>
+            <div class="energy-lbl">Light</div>
+          </div>
+          <div class="energy-sep">&#58;</div>
+          <div class="energy-val">
+            <div class="energy-num shadow-col">3</div>
+            <div class="energy-lbl">Shadow</div>
+          </div>
+          <div style="margin-left:12px">
+            <div class="energy-status" style="background:rgba(80,140,220,0.15);color:#90C0F0;border-color:rgba(80,140,220,0.25)">Energy reducing</div>
+          </div>
+        </div>
+        <div class="constraint-badge" style="background:rgba(80,140,220,0.1);border-color:rgba(80,140,220,0.25);color:var(--bluel)">&#10052; The energy is reduced by half &#8212; keep the balance</div>
+        <div class="input-row">
+          <div class="input-group">
+            <div class="input-label">Light</div>
+            <input type="number" id="inp-l2" placeholder="?" min="0.5" max="99" step="0.5">
+          </div>
+          <div class="input-sep" style="padding-bottom:10px">&#58;</div>
+          <div class="input-group">
+            <div class="input-label">Shadow</div>
+            <input type="number" id="inp-s2" placeholder="?" min="0.5" max="99" step="0.5">
+          </div>
+        </div>
+        <div class="feedback-bar" id="fb2"></div>
+        <div class="task-btns">
+          <button class="task-btn secondary" onclick="toggleSage2()">Ask Sage</button>
+          <button class="task-btn primary" onclick="testIdea2()">Test My Idea</button>
+        </div>
+        <div class="task-hint">&#8220;How can you keep the same balance when values shrink?&#8221;</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 4 — Reflection ════ -->
+<div class="screen" id="screen-4">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/gate-bg.png" alt="gate">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:88%"></div></div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box">
+        <div class="dialogue-speaker"><div class="speaker-dot"></div>Reflection</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--txti);margin-bottom:8px;line-height:1.5">Did the balance change when the numbers changed?</div>
+            <div style="display:flex;flex-direction:column;gap:6px" id="ref1">
+              <button class="choice-btn" onclick="selRef(this,'ref1')">No &#8212; the relationship stayed the same even as numbers grew</button>
+              <button class="choice-btn" onclick="selRef(this,'ref1')">Yes &#8212; bigger numbers felt different to me</button>
+              <button class="choice-btn" onclick="selRef(this,'ref1')">I&#8217;m not sure yet</button>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--txti);margin-bottom:8px;line-height:1.5">What stayed the same?</div>
+            <textarea style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;font-family:var(--serif);font-size:13px;color:var(--txti);resize:none;outline:none;min-height:52px;line-height:1.5" placeholder="Write anything &#8212; there is no wrong answer&#8230;"></textarea>
+          </div>
+          <button class="task-btn primary" onclick="goScreen('screen-5')">Save reflection &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 5 — Chapter End ════ -->
+<div class="screen" id="screen-5">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/gate-bg.png" alt="gate">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="particles" id="p5"></div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+        <div style="font-family:var(--sans);font-size:10px;color:var(--sage-light);margin-top:4px">Complete</div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box" style="text-align:center">
+        <div style="font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--txtm);margin-bottom:8px">Chapter Complete</div>
+        <div style="font-family:var(--serif);font-size:22px;font-weight:600;color:var(--goldl);margin-bottom:14px">Chapter 2: The Expanding Light</div>
+        <div style="display:flex;justify-content:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <div style="background:rgba(200,168,75,0.1);border:1px solid rgba(200,168,75,0.2);border-radius:8px;padding:9px 14px;text-align:center">
+            <div style="font-family:var(--serif);font-size:14px;font-weight:600;color:var(--goldl)">Scaling Ratios</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Concept explored</div>
+          </div>
+          <div style="background:rgba(90,138,90,0.1);border:1px solid rgba(90,138,90,0.2);border-radius:8px;padding:9px 14px;text-align:center">
+            <div style="font-family:var(--serif);font-size:14px;font-weight:600;color:var(--sage-light)" id="end-p">0</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Persistence moments</div>
+          </div>
+          <div style="background:rgba(144,192,240,0.08);border:1px solid rgba(144,192,240,0.18);border-radius:8px;padding:9px 14px;text-align:center">
+            <div style="font-family:var(--serif);font-size:14px;font-weight:600;color:var(--bluel)">Saved</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Reflection in Journey</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06)">
+          <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--sage-light);line-height:1.65">&#8220;You are starting to see it.<br>Balance is not about size. It is about relationship.&#8221;</div>
+          <div style="font-family:var(--sans);font-size:11px;color:var(--txtm);margin-top:6px">&#8212; Sage</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="task-btn primary" style="width:100%" onclick="window.location.href='chapter-ratios-3.html'">Continue to Chapter 3 &#8594;</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn-continue" style="flex:1;justify-content:center;display:flex" onclick="window.location.href='../story.html'">Story Map</button>
+            <button class="btn-continue" style="flex:1;justify-content:center;display:flex">View My Journey</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success-overlay" id="succ">
+  <div class="success-card">
+    <div class="success-glow">&#10022; &#10022; &#10022;</div>
+    <div class="success-title" id="succ-title">The light flows in balance.</div>
+    <div class="success-sub" id="succ-sub">&#8220;You kept the relationship intact even as everything changed.&#8221; &#8212; Sage</div>
+    <div class="success-badges">
+      <div class="badge"><div class="badge-val">+1</div><div class="badge-lbl">Persistence Light</div></div>
+      <div class="badge"><div class="badge-val">+1</div><div class="badge-lbl">Memory saved</div></div>
+    </div>
+    <button class="success-btn primary" id="succ-btn" onclick="closeSucc()">Continue &#8594;</button>
+  </div>
+</div>
+
+<script>
+var state = {persist:0, orbCount:0, orbCount2:0, sageLevel:0, sageLevel2:0, attempts1:0, attempts2:0};
+
+var dlg1 = [
+  'The balance is returning&#8230; but something is changing. The light is spreading too far.',
+  'When the gate grows, the energy inside must scale with it. The ratio must hold.',
+];
+var dlg1i = 0;
+
+function advDlg1(){
+  dlg1i++;
+  if(dlg1i >= dlg1.length){ goScreen('screen-2'); spawnP('p1'); return; }
+  document.getElementById('dlg-1-txt').innerHTML = dlg1[dlg1i];
+}
+
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+}
+
+function addPersist(prefix){
+  state.persist++;
+  var key = prefix === '2' ? 'orbCount2' : 'orbCount';
+  var pfx = prefix === '2' ? 'o2-' : 'o';
+  var lblId = prefix === '2' ? 'plbl2' : 'plbl';
+  if(state[key] < 5){
+    state[key]++;
+    var o = document.getElementById(pfx + state[key]);
+    if(o) o.classList.add('lit');
+  }
+  var lbl = document.getElementById(lblId);
+  if(lbl) lbl.textContent = state.persist + (state.persist===1?' moment':' moments');
+  document.getElementById('end-p').textContent = state.persist;
+}
+
+function liveUpdate(){
+  var l = parseFloat(document.getElementById('inp-l').value)||0;
+  var s = parseFloat(document.getElementById('inp-s').value)||0;
+  if(l>0 && s>0 && document.getElementById('scale-tool').style.display!=='none'){
+    var mx = Math.max(l,s,12);
+    document.getElementById('bar-l').style.width = Math.min(100,(l/mx)*100)+'%';
+    document.getElementById('bar-s').style.width = Math.min(100,(s/mx)*100)+'%';
+    document.getElementById('sn-l').textContent = l;
+    document.getElementById('sn-s').textContent = s;
+  }
+}
+
+function applyScale(mult){
+  document.getElementById('inp-l').value = (6*mult);
+  document.getElementById('inp-s').value = (3*mult);
+  var mx = Math.max(6*mult, 3*mult, 12);
+  document.getElementById('bar-l').style.width = Math.min(100,(6*mult/mx)*100)+'%';
+  document.getElementById('bar-s').style.width = Math.min(100,(3*mult/mx)*100)+'%';
+  document.getElementById('sn-l').textContent = 6*mult;
+  document.getElementById('sn-s').textContent = 3*mult;
+  document.getElementById('scale-hint-txt').textContent = 'Scaled &#215;'+mult+': '+(6*mult)+' : '+(3*mult);
+  document.querySelectorAll('.scale-mult-btn').forEach(function(b){b.classList.remove('active')});
+  event.target.classList.add('active');
+}
+
+function toggleScaleTool(){
+  var t = document.getElementById('scale-tool');
+  t.style.display = t.style.display==='none'?'block':'none';
+}
+
+function testIdea1(){
+  var l = parseFloat(document.getElementById('inp-l').value);
+  var s = parseFloat(document.getElementById('inp-s').value);
+  var fb = document.getElementById('fb');
+  if(!l||!s||isNaN(l)||isNaN(s)){
+    fb.textContent='Enter both Light and Shadow values.';
+    fb.className='feedback-bar show wrong';return;
+  }
+  state.attempts1++;
+  addPersist('1');
+  var ratio = l/s;
+  var target = 2;
+  var diff = Math.abs(ratio-target);
+  if(diff<0.01){
+    fb.textContent='The light flows evenly. The balance holds as the energy expands.';
+    fb.className='feedback-bar show correct';
+    document.getElementById('succ-title').textContent='The light flows in balance.';
+    document.getElementById('succ-btn').onclick=function(){closeSucc();goScreen('screen-3');};
+    setTimeout(function(){document.getElementById('succ').classList.add('show');
+    if (window.SAGE) setTimeout(function(){ window.SAGE.awardCoins(10, 'Light balanced! +10 coins'); }, 800);spawnP('p1');},700);
+  } else if(diff<0.8){
+    fb.textContent='The light steadies a little. The relationship feels close but not quite there.';
+    fb.className='feedback-bar show close';
+    if(state.attempts1>=2) setTimeout(function(){document.getElementById('sage-bubble').classList.add('show');},500);
+  } else {
+    fb.textContent='The light becomes unstable. The amounts are uneven. Try adjusting both together.';
+    fb.className='feedback-bar show wrong';
+    setTimeout(function(){ showSage2Rule('wrong'); }, 1200);
+    if(state.attempts1>=2) setTimeout(function(){document.getElementById('sage-bubble').classList.add('show');},500);
+  }
+}
+
+function testIdea2(){
+  var l = parseFloat(document.getElementById('inp-l2').value);
+  var s = parseFloat(document.getElementById('inp-s2').value);
+  var fb = document.getElementById('fb2');
+  if(!l||!s||isNaN(l)||isNaN(s)){
+    fb.textContent='Enter both values.';
+    fb.className='feedback-bar show wrong';return;
+  }
+  state.attempts2++;
+  addPersist('2');
+  var ratio = l/s;
+  var target = 2;
+  var diff = Math.abs(ratio-target);
+  if(diff<0.01){
+    fb.textContent='The gate accepts the reduced energy. The balance holds.';
+    fb.className='feedback-bar show correct';
+    document.getElementById('succ-title').textContent='Balance restored at smaller scale.';
+    document.getElementById('succ-sub').innerHTML='&#8220;The relationship is what matters. Not the size.&#8221; &#8212; Sage';
+    document.getElementById('succ-btn').onclick=function(){closeSucc();goScreen('screen-4');};
+    setTimeout(function(){document.getElementById('succ').classList.add('show');spawnP('p5');},700);
+  } else if(diff<0.8){
+    fb.textContent='The energy flickers. Getting closer &#8212; try halving both numbers from before.';
+    fb.className='feedback-bar show close';
+    if(state.attempts2>=2) setTimeout(function(){document.getElementById('sage-bubble-2').classList.add('show');},500);
+  } else {
+    fb.textContent='The gate flickers. Remember: both values need to shrink in the same proportion.';
+    fb.className='feedback-bar show wrong';
+    if(state.attempts2>=2) setTimeout(function(){document.getElementById('sage-bubble-2').classList.add('show');},500);
+  }
+}
+
+
+function closeSage(){document.getElementById('sage-bubble').classList.remove('show');}
+function sageHint2(){
+  state.sageLevel++;
+  var txt = document.getElementById('sage-txt');
+  if(state.sageLevel===1) txt.textContent='Try multiplying both numbers by the same amount. If Light was 6 and you double it, what does Shadow become?';
+  else txt.textContent='Light = 6&#215;2 = 12. Shadow = 3&#215;2 = 6. Does 12:6 have the same relationship as 6:3?';
+  addPersist('1');
+}
+function toggleSage2(){document.getElementById('sage-bubble-2').classList.toggle('show');addPersist('2');}
+function closeSage2(){document.getElementById('sage-bubble-2').classList.remove('show');}
+function sageHint3(){
+  state.sageLevel2++;
+  var txt = document.getElementById('sage-txt-2');
+  if(state.sageLevel2===1) txt.textContent='If the original is 6:3, and energy is halved, try dividing both by 2. What do you get?';
+  else txt.textContent='6 &#247; 2 = 3. 3 &#247; 2 = 1.5. So 3:1.5 keeps the same balance. Or think of it as 2:1.';
+  addPersist('2');
+}
+
+function closeSucc(){document.getElementById('succ').classList.remove('show');}
+
+function selRef(el, gid){
+  document.querySelectorAll('#'+gid+' .choice-btn').forEach(function(b){b.style.background='rgba(30,50,90,0.5)';b.style.borderColor='rgba(180,200,240,0.2)'});
+  el.style.background='rgba(50,80,140,0.65)';
+  el.style.borderColor='rgba(180,200,240,0.45)';
+}
+
+function spawnP(id){
+  var c=document.getElementById(id);
+  if(!c)return;
+  for(var i=0;i<14;i++){
+    var p=document.createElement('div');
+    p.className='particle';
+    p.style.left=(15+Math.random()*70)+'%';
+    p.style.bottom=(12+Math.random()*20)+'%';
+    p.style.width=p.style.height=(4+Math.random()*5)+'px';
+    p.style.background=Math.random()>.5?'#F0D060':'#80C8FF';
+    p.style.animationDelay=(Math.random()*.8)+'s';
+    c.appendChild(p);
+    setTimeout(function(el){el.remove();},3000,p);
+  }
+}
+
+function saveProgress(){alert('Progress saved.');}
+function exitChapter(){if(confirm('Exit? Progress will be saved.'))window.location.href='../story.html';}
+
+spawnP('p1');
+
+// SAGE RULES — Chapter 2
+var sage2IdleTimer = null;
+var sage2LastAction = Date.now();
+
+function sage2ResetIdle() {
+  sage2LastAction = Date.now();
+  clearTimeout(sage2IdleTimer);
+  sage2IdleTimer = setTimeout(function() {
+    showSage2Rule('idle');
+  }, 40000);
+}
+
+function showSage2Rule(trigger) {
+  var attempts = (state.attempts1||0) + (state.attempts2||0);
+  var msg = '';
+  if (trigger === 'idle') {
+    msg = "You can slow down. What do you notice about how both numbers change together?";
+  } else if (trigger === 'ask') {
+    if (attempts <= 1) msg = "What happens if both parts change in the same way?";
+    else if (attempts === 2) msg = "Try multiplying both numbers by the same amount. Does the balance hold?";
+    else msg = "If Light was 6 and you double it to 12, what should happen to Shadow to keep the same relationship?";
+  } else if (trigger === 'wrong') {
+    if (attempts <= 1) msg = "The light feels unsteady. Both parts need to change together to keep the balance.";
+    else msg = "What if you tried changing both numbers by the same amount at the same time?";
+  }
+  if (!msg) return;
+  var b = document.getElementById('sage-bubble');
+  if (b) {
+    var t = document.getElementById('sage-bubble-txt') || b.querySelector('div');
+    if (t) t.textContent = msg;
+    else b.textContent = msg;
+    b.classList.add('show');
+    setTimeout(function(){ b.classList.remove('show'); }, 5000);
+  }
+}
+
+function toggleSage() {
+  addP('1');
+  fetch('/api/sage-hint', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      mode:'story', task:'ratio_expanding_light', concept:'ratio',
+      goal:'scale ratio correctly when energy doubles or halves',
+      attempts:(state.attempts1||0)+(state.attempts2||0),
+      student_action:'asked for hint',
+      hint_level: Math.min(3, 1+Math.floor(((state.attempts1||0)+(state.attempts2||0))/2)),
+    })
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d&&d.message){
+      var b=document.getElementById('sage-bubble');
+      if(b){var t=b.querySelector('.sage-bubble-txt')||b;t.textContent=d.message;b.classList.add('show');setTimeout(function(){b.classList.remove('show');},6000);}
+    } else { showSage2Rule('ask'); }
+  }).catch(function(){ showSage2Rule('ask'); });
+}
+document.addEventListener('input', sage2ResetIdle);
+
+</script>
+
+</body>
+</html>

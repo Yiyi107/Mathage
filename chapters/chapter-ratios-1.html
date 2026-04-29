@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathage &#8212; Chapter 1: The Broken Gate</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Source+Sans+3:wght@300;400;600&family=Caveat:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-dark:#0D1A1F;
+  --panel:rgba(12,20,28,0.78);
+  --panel2:rgba(20,32,44,0.82);
+  --cream:#FDFAF4;--warm:#F5EDD8;
+  --gold:#C8A84B;--goldl:#E8D090;--goldp:#F7EDD4;
+  --sage-green:#5A8A5A;--sage-light:#A8D4A8;
+  --moon:#D4E8F8;--moonl:#EAF4FF;
+  --purple:#6A4A9A;--purplel:#B0A0D8;--purplep:#E8E0F8;
+  --glow:#F0D860;--glowsoft:rgba(240,216,96,0.18);
+  --txt:#1c1d1f;--txti:rgba(253,250,244,0.92);--txtm:rgba(253,250,244,0.6);
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --hand:'Caveat',cursive;
+  --radius:16px;
+}
+html,body{height:100%;margin:0;padding:0;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg-dark);display:flex;flex-direction:column;height:100vh;color:var(--txti)}
+
+/* ── NAV ── */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:48px;flex-shrink:0;
+  background:rgba(13,26,31,0.9);
+  border-bottom:1px solid rgba(200,168,75,0.15);
+  z-index:50;position:relative;
+}
+.nav-logo{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--goldl);display:flex;align-items:center;gap:7px;text-decoration:none}
+.logo-dot{width:18px;height:18px;border-radius:50%;background:var(--sage-green);display:flex;align-items:center;justify-content:center}
+.logo-seed{width:7px;height:7px;border-radius:50%;background:#B8DFA0}
+.nav-title{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--txtm)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.nav-btn{
+  font-family:var(--sans);font-size:12px;font-weight:400;
+  color:var(--txtm);background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);border-radius:20px;
+  padding:5px 12px;cursor:pointer;transition:all .2s;
+}
+.nav-btn:hover{background:rgba(255,255,255,0.12);color:var(--txti)}
+
+/* ── SCENE ── */
+.scene{
+  flex:1;position:relative;overflow:hidden;
+  display:flex;align-items:flex-end;
+}
+.scene-bg{
+  position:absolute;inset:0;
+  background:var(--bg-dark);
+  overflow:hidden;
+}
+.scene-bg img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:center center;
+  opacity:0.88;
+}
+.scene-bg-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,
+    rgba(13,26,31,0.05) 0%,
+    rgba(13,26,31,0.0) 40%,
+    rgba(13,26,31,0.55) 75%,
+    rgba(13,26,31,0.88) 100%);
+}
+
+/* character placeholder */
+.character{
+  position:absolute;
+  bottom:180px;left:50%;
+  transform:translateX(-50%);
+  z-index:5;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  opacity:0;transition:opacity .6s;
+}
+.character.visible{opacity:1}
+.char-placeholder{
+  width:90px;height:140px;
+  background:rgba(90,138,90,0.15);
+  border:1.5px dashed rgba(168,212,168,0.3);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--sans);font-size:10px;color:rgba(168,212,168,0.4);
+  text-align:center;line-height:1.4;
+}
+.char-name{
+  font-family:var(--serif);font-size:11px;font-style:italic;
+  color:rgba(168,212,168,0.5);
+}
+
+/* ── HUD: top-right ── */
+.hud-top{
+  position:absolute;top:12px;right:16px;
+  display:flex;flex-direction:column;gap:8px;
+  z-index:20;min-width:180px;
+}
+.hud-card{
+  background:var(--panel);
+  border:1px solid rgba(200,168,75,0.2);
+  border-radius:10px;padding:10px 14px;
+  backdrop-filter:blur(8px);
+}
+.hud-label{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--txtm);margin-bottom:6px}
+.progress-track{width:100%;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(to right,var(--sage-green),var(--goldl));border-radius:3px;transition:width .5s ease}
+.hud-steps{display:flex;gap:4px;margin-top:6px}
+.hud-step{
+  flex:1;height:3px;border-radius:2px;
+  background:rgba(255,255,255,0.12);transition:background .4s;
+}
+.hud-step.done{background:var(--sage-green)}
+.hud-step.current{background:var(--goldl)}
+.task-text{font-family:var(--serif);font-size:12px;font-style:italic;color:var(--goldl);line-height:1.4}
+
+.persist-row{display:flex;align-items:center;gap:8px}
+.persist-orbs{display:flex;gap:4px}
+.orb{
+  width:14px;height:14px;border-radius:50%;
+  background:rgba(240,216,96,0.15);
+  border:1px solid rgba(240,216,96,0.25);
+  transition:all .4s;
+}
+.orb.lit{background:var(--glow);border-color:var(--gold);box-shadow:0 0 6px rgba(240,216,96,0.5)}
+.persist-label{font-family:var(--sans);font-size:11px;color:var(--txtm)}
+
+/* ── FLOATING ACTIONS: bottom-right ── */
+.hud-float{
+  position:absolute;bottom:200px;right:16px;
+  display:flex;flex-direction:column;gap:8px;
+  z-index:20;
+}
+.float-btn{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,0.12);
+  cursor:pointer;transition:all .2s;
+  backdrop-filter:blur(8px);
+  font-size:18px;position:relative;
+}
+.float-btn:hover{background:rgba(30,50,60,0.95);border-color:rgba(200,168,75,0.4);transform:scale(1.06)}
+.float-tip{
+  position:absolute;right:52px;top:50%;transform:translateY(-50%);
+  background:rgba(13,26,31,0.92);border:1px solid rgba(200,168,75,0.2);
+  border-radius:6px;padding:4px 10px;
+  font-family:var(--sans);font-size:11px;color:var(--goldl);
+  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;
+}
+.float-btn:hover .float-tip{opacity:1}
+
+/* ── DIALOGUE BOX ── */
+.dialogue-area{
+  position:relative;z-index:10;width:100%;
+  padding:0 20px 16px;
+}
+.dialogue-box{
+  background:var(--panel2);
+  border:1px solid rgba(200,168,75,0.2);
+  border-radius:var(--radius);
+  padding:20px 24px 16px;
+  backdrop-filter:blur(16px);
+  max-width:860px;margin:0 auto;
+  position:relative;
+}
+.dialogue-speaker{
+  font-family:var(--serif);font-size:12px;font-weight:600;
+  font-style:italic;color:var(--sage-light);
+  text-transform:uppercase;letter-spacing:0.8px;
+  margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.speaker-dot{width:6px;height:6px;border-radius:50%;background:var(--sage-green)}
+.dialogue-text{
+  font-family:var(--serif);font-size:16px;font-weight:400;
+  color:var(--txti);line-height:1.65;min-height:48px;
+}
+.dialogue-continue{
+  display:flex;align-items:center;justify-content:flex-end;gap:12px;
+  margin-top:12px;
+}
+.btn-continue{
+  font-family:var(--sans);font-size:13px;font-weight:600;
+  color:var(--goldl);background:rgba(200,168,75,0.12);
+  border:1px solid rgba(200,168,75,0.3);border-radius:20px;
+  padding:7px 20px;cursor:pointer;transition:all .2s;
+}
+.btn-continue:hover{background:rgba(200,168,75,0.22);border-color:rgba(200,168,75,0.5)}
+.btn-continue.primary{
+  background:var(--sage-green);border-color:var(--sage-green);
+  color:var(--cream);
+}
+.btn-continue.primary:hover{background:#4A7A4A}
+
+/* choices */
+.choices{
+  display:flex;flex-direction:column;gap:8px;margin-top:14px;
+}
+.choice-btn{
+  font-family:var(--serif);font-size:14px;font-weight:400;font-style:italic;
+  color:var(--moonl);background:rgba(30,50,80,0.5);
+  border:1px solid rgba(180,200,240,0.2);border-radius:10px;
+  padding:10px 16px;cursor:pointer;transition:all .2s;text-align:left;
+}
+.choice-btn:hover{background:rgba(50,80,120,0.65);border-color:rgba(180,200,240,0.4);transform:translateX(4px)}
+
+/* ── TASK PANEL ── */
+.task-panel{
+  display:none;
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  z-index:30;
+  background:var(--panel2);
+  border:1px solid rgba(200,168,75,0.25);
+  border-radius:20px;
+  padding:28px 32px;
+  backdrop-filter:blur(20px);
+  max-width:460px;width:90%;
+  text-align:center;
+}
+.task-panel.visible{display:block}
+.task-panel-title{font-family:var(--serif);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txtm);margin-bottom:8px}
+.task-panel-heading{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--goldl);margin-bottom:6px;line-height:1.25}
+.task-panel-sub{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--txtm);margin-bottom:20px;line-height:1.5}
+.gate-display{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  background:rgba(255,255,255,0.04);border-radius:12px;
+  padding:16px;margin-bottom:20px;border:1px solid rgba(240,216,96,0.12);
+}
+.gate-val{text-align:center}
+.gate-val-num{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--goldl)}
+.gate-val-lbl{font-family:var(--sans);font-size:11px;font-weight:400;color:var(--txtm);margin-top:2px}
+.gate-sep{font-family:var(--serif);font-size:22px;color:rgba(240,216,96,0.3)}
+.input-row{display:flex;gap:16px;margin-bottom:16px;align-items:flex-end}
+.input-group{flex:1;text-align:center}
+.input-label{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;color:var(--txtm);margin-bottom:6px}
+.input-group input{
+  width:100%;background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.15);border-radius:8px;
+  padding:10px;font-family:var(--serif);font-size:22px;font-weight:600;
+  color:var(--goldl);text-align:center;outline:none;transition:border .2s;
+}
+.input-group input:focus{border-color:rgba(200,168,75,0.5)}
+.input-sep{font-family:var(--serif);font-size:20px;color:rgba(240,216,96,0.3);padding-bottom:10px}
+.task-btns{display:flex;gap:10px;margin-top:4px}
+.task-btn{
+  flex:1;font-family:var(--sans);font-size:13px;font-weight:600;
+  border:none;border-radius:8px;padding:11px;cursor:pointer;transition:all .2s;
+}
+.task-btn.primary{background:var(--sage-green);color:var(--cream)}
+.task-btn.primary:hover{background:#4A7A4A}
+.task-btn.secondary{background:rgba(255,255,255,0.07);color:var(--txtm);border:1px solid rgba(255,255,255,0.12)}
+.task-btn.secondary:hover{background:rgba(255,255,255,0.12)}
+.task-hint{font-family:var(--serif);font-size:12px;font-style:italic;color:rgba(168,212,168,0.55);margin-top:12px;line-height:1.5}
+
+/* gate visual */
+.gate-visual{
+  display:flex;gap:8px;justify-content:center;margin-bottom:16px;
+}
+.gate-panel{
+  width:36px;height:60px;border-radius:6px;
+  border:1px solid rgba(240,216,96,0.25);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .5s;
+}
+.gate-panel.dim{background:rgba(240,216,96,0.04)}
+.gate-panel.glow{background:rgba(240,216,96,0.18);box-shadow:0 0 12px rgba(240,216,96,0.3)}
+.gate-panel.bright{background:rgba(240,216,96,0.38);box-shadow:0 0 20px rgba(240,216,96,0.5)}
+
+/* feedback */
+.feedback-bar{
+  font-family:var(--serif);font-size:13px;font-style:italic;
+  border-radius:8px;padding:8px 14px;margin-top:8px;
+  text-align:center;opacity:0;transition:opacity .3s;line-height:1.4;
+}
+.feedback-bar.show{opacity:1}
+.feedback-bar.wrong{background:rgba(180,80,60,0.15);color:#F0B0A0;border:1px solid rgba(180,80,60,0.2)}
+.feedback-bar.close{background:rgba(200,168,75,0.12);color:var(--goldl);border:1px solid rgba(200,168,75,0.2)}
+.feedback-bar.correct{background:rgba(90,138,90,0.18);color:var(--sage-light);border:1px solid rgba(90,138,90,0.3)}
+
+/* sage bubble */
+.sage-bubble{
+  position:absolute;bottom:200px;right:72px;
+  max-width:260px;
+  background:rgba(20,40,50,0.92);
+  border:1px solid rgba(168,212,168,0.25);
+  border-radius:14px;padding:12px 16px;
+  z-index:40;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s, transform .25s;
+  transform:translateY(6px);
+  backdrop-filter:blur(12px);
+}
+.sage-bubble.show{opacity:1;pointer-events:all;transform:translateY(0)}
+.sage-bubble-txt{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--sage-light);line-height:1.55;margin-bottom:10px}
+.sage-bubble-btns{display:flex;gap:6px;flex-wrap:wrap}
+.sage-bubble-btn{
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  background:rgba(90,138,90,0.18);border:1px solid rgba(90,138,90,0.3);
+  border-radius:20px;padding:4px 10px;cursor:pointer;color:var(--sage-light);transition:all .15s;
+}
+.sage-bubble-btn:hover{background:rgba(90,138,90,0.3)}
+
+/* visual model */
+.visual-model{
+  display:none;
+  background:rgba(255,255,255,0.04);border-radius:12px;
+  padding:14px;margin:12px 0;border:1px solid rgba(200,168,75,0.1);
+}
+.visual-model.show{display:block}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-label{font-family:var(--sans);font-size:12px;color:var(--txtm);width:52px;text-align:right}
+.bar-track{flex:1;height:18px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.bar-fill.light{background:linear-gradient(to right,#F0D060,#E8C040)}
+.bar-fill.shadow{background:linear-gradient(to right,#6080A0,#4060A0)}
+.bar-num{font-family:var(--serif);font-size:12px;color:var(--txtm);width:20px}
+
+/* success overlay */
+.success-overlay{
+  display:none;position:absolute;inset:0;z-index:50;
+  background:rgba(10,20,14,0.6);
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.success-overlay.show{display:flex}
+.success-card{
+  background:rgba(16,28,20,0.96);
+  border:1.5px solid rgba(200,168,75,0.35);
+  border-radius:20px;padding:36px 40px;
+  max-width:440px;width:90%;text-align:center;
+}
+.success-glow{font-size:32px;margin-bottom:12px;letter-spacing:6px}
+.success-title{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--goldl);margin-bottom:6px}
+.success-sub{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--sage-light);margin-bottom:20px;line-height:1.5}
+.success-badges{display:flex;justify-content:center;gap:12px;margin-bottom:24px}
+.badge{background:rgba(200,168,75,0.1);border:1px solid rgba(200,168,75,0.25);border-radius:8px;padding:10px 14px;text-align:center}
+.badge-val{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--goldl)}
+.badge-lbl{font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px}
+.success-btns{display:flex;flex-direction:column;gap:8px}
+.success-btn{font-family:var(--sans);font-size:14px;font-weight:600;border:none;border-radius:8px;padding:12px;cursor:pointer;transition:all .2s}
+.success-btn.primary{background:var(--sage-green);color:var(--cream)}
+.success-btn.primary:hover{background:#4A7A4A}
+.success-btn.secondary{background:rgba(255,255,255,0.07);color:var(--txtm);border:1px solid rgba(255,255,255,0.1)}
+
+/* reflection */
+.reflection-panel{
+  display:none;
+  background:rgba(20,34,44,0.94);border:1px solid rgba(180,160,220,0.2);
+  border-radius:20px;padding:28px 32px;
+  max-width:500px;width:90%;text-align:left;
+}
+.reflection-panel.show{display:block}
+.ref-title{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--purplel);margin-bottom:16px}
+.ref-q{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--txti);margin-bottom:10px;line-height:1.5}
+.ref-choices{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.ref-choice{
+  font-family:var(--sans);font-size:13px;color:var(--txti);
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px;padding:9px 14px;cursor:pointer;transition:all .2s;
+}
+.ref-choice:hover,.ref-choice.sel{background:rgba(106,74,154,0.25);border-color:rgba(176,160,216,0.35)}
+.ref-textarea{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px;padding:10px 14px;
+  font-family:var(--serif);font-size:13px;color:var(--txti);
+  resize:none;outline:none;margin-bottom:14px;min-height:60px;line-height:1.5;
+}
+
+/* particles */
+.particles{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+.particle{
+  position:absolute;width:6px;height:6px;border-radius:50%;
+  background:var(--glow);opacity:0;
+  animation:floatUp 2.5s ease-out forwards;
+}
+@keyframes floatUp{
+  0%{opacity:0;transform:translateY(0) scale(0)}
+  20%{opacity:0.8}
+  100%{opacity:0;transform:translateY(-120px) scale(0.3)}
+}
+
+/* transitions */
+.fade-in{animation:fadeIn .5s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SCREEN visibility */
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column;height:100%}
+</style>
+<link rel="stylesheet" href="../mobile.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="window.location.href='../index.html'" style="cursor:pointer"><img src="../images/logo.png" alt="Mathage" style="height:36px;width:auto;display:block;object-fit:contain;">
+  </div>
+  <div class="nav-title" id="nav-title">Story 1 &nbsp;&#183;&nbsp; Chapter 1: The Broken Gate</div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="saveProgress()">Save</button>
+    <button class="nav-btn" onclick="exitChapter()">Exit</button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════
+     SCREEN 1 — Entry
+════════════════════════════════════ -->
+<div class="screen active" id="screen-1">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/meadow-bg.png" alt="glowing meadow" id="bg-img">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="particles" id="particles-1"></div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:8%"></div></div>
+        <div class="hud-steps">
+          <div class="hud-step current"></div>
+          <div class="hud-step"></div><div class="hud-step"></div>
+          <div class="hud-step"></div><div class="hud-step"></div>
+          <div class="hud-step"></div><div class="hud-step"></div>
+        </div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-label">Focus</div>
+        <div class="task-text">Notice patterns &amp; keep trying</div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box">
+        <div style="text-align:center;margin-bottom:18px">
+          <div style="font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--txtm);margin-bottom:10px">Story 1 &#183; The Ratio of Light</div>
+          <div style="font-family:var(--serif);font-size:28px;font-weight:600;color:var(--goldl);margin-bottom:6px">Chapter 1</div>
+          <div style="font-family:var(--serif);font-size:18px;font-style:italic;color:var(--txti);margin-bottom:14px">The Broken Gate</div>
+          <div style="width:60px;height:1px;background:rgba(200,168,75,0.25);margin:0 auto 14px"></div>
+          <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--txtm);max-width:400px;margin:0 auto;line-height:1.65">&#8220;Step into Mathage, where every choice shapes the world.&#8221;</div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:4px">
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 16px;text-align:center">
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:3px">Concept</div>
+            <div style="font-family:var(--serif);font-size:13px;color:var(--goldl)">Ratio</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 16px;text-align:center">
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:3px">Difficulty</div>
+            <div style="font-family:var(--serif);font-size:13px;color:var(--goldl)">Gentle Start</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 16px;text-align:center">
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:3px">Chapters</div>
+            <div style="font-family:var(--serif);font-size:13px;color:var(--goldl)">5 total</div>
+          </div>
+        </div>
+        <div class="dialogue-continue" style="margin-top:18px">
+          <button class="btn-continue" onclick="window.location.href='../story.html'">Back to Story Map</button>
+          <button class="btn-continue primary" onclick="goScreen('screen-2')">Start Chapter &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 2 — Narrative
+════════════════════════════════════ -->
+<div class="screen" id="screen-2">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/meadow-bg.png" alt="meadow">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="character visible" id="char-sage">
+      <img src="../images/sage-default.png" alt="Sage" style="width:180px;height:auto;filter:drop-shadow(0 4px 16px rgba(180,220,255,0.4));animation:sageFloat 3.2s ease-in-out infinite;">
+      <div class="char-name">Sage</div>
+    </div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:20%"></div></div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-label">Persistence</div>
+        <div class="persist-row">
+          <div class="persist-orbs">
+            <div class="orb" id="orb1"></div><div class="orb" id="orb2"></div>
+            <div class="orb" id="orb3"></div><div class="orb" id="orb4"></div>
+            <div class="orb" id="orb5"></div>
+          </div>
+          <div class="persist-label">0 moments</div>
+        </div>
+      </div>
+    </div>
+    <div class="hud-float">
+      <div class="float-btn" onclick="toggleSage()">
+        <span>&#9784;</span>
+        <div class="float-tip">Ask Sage</div>
+      </div>
+      <div class="float-btn">
+        <span>&#128214;</span>
+        <div class="float-tip">My Journey</div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in" id="dialogue-2">
+      <div class="dialogue-box">
+        <div class="dialogue-speaker" id="spk-2"><div class="speaker-dot"></div><span id="spk-name-2">Narration</span></div>
+        <div class="dialogue-text" id="dlg-txt-2">The air feels different the moment you step into Mathage.</div>
+        <div class="dialogue-continue">
+          <button class="btn-continue primary" id="btn-next-2" onclick="advanceDialogue2()">Continue &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 3 — Choice
+════════════════════════════════════ -->
+<div class="screen" id="screen-3">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/meadow-bg.png" alt="meadow">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="character visible">
+      <img src="../images/sage-default.png" alt="Sage" style="width:180px;height:auto;filter:drop-shadow(0 4px 16px rgba(180,220,255,0.4));animation:sageFloat 3.2s ease-in-out infinite;">
+      <div class="char-name">Sage</div>
+    </div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:35%"></div></div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box">
+        <div class="dialogue-speaker"><div class="speaker-dot"></div>Sage</div>
+        <div class="dialogue-text">Before we go further&#8230; what kind of learner are you when something feels difficult?</div>
+        <div class="choices">
+          <button class="choice-btn" onclick="makeChoice('persistent')">&#8220;I keep trying different ideas.&#8221;</button>
+          <button class="choice-btn" onclick="makeChoice('stuck')">&#8220;I get stuck easily.&#8221;</button>
+          <button class="choice-btn" onclick="makeChoice('unsure')">&#8220;I&#8217;m not sure yet.&#8221;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 4 — Reveal Gate
+════════════════════════════════════ -->
+<div class="screen" id="screen-4">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/meadow-bg.png" alt="gate scene">
+      <div class="scene-bg-overlay" style="background:linear-gradient(to bottom,rgba(13,26,31,0.1) 0%,rgba(13,26,31,0.0) 35%,rgba(13,26,31,0.6) 75%,rgba(13,26,31,0.92) 100%)"></div>
+    </div>
+    <!-- gate visual in scene -->
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px">
+      <div style="font-family:var(--serif);font-size:11px;font-style:italic;color:rgba(240,216,96,0.45);letter-spacing:1px;margin-bottom:4px">The Gate of Balance</div>
+      <div style="display:flex;gap:6px">
+        <div style="width:44px;height:80px;border-radius:6px 6px 0 0;background:rgba(240,216,96,0.08);border:1px solid rgba(240,216,96,0.2);animation:gatePulse 2.5s ease-in-out infinite"></div>
+        <div style="width:44px;height:96px;border-radius:6px 6px 0 0;background:rgba(240,216,96,0.12);border:1px solid rgba(240,216,96,0.25);animation:gatePulse 2.5s ease-in-out infinite .4s"></div>
+        <div style="width:44px;height:80px;border-radius:6px 6px 0 0;background:rgba(240,216,96,0.08);border:1px solid rgba(240,216,96,0.2);animation:gatePulse 2.5s ease-in-out infinite .8s"></div>
+      </div>
+    </div>
+    <style>@keyframes gatePulse{0%,100%{opacity:.5}50%{opacity:1}}</style>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in" id="dialogue-4">
+      <div class="dialogue-box">
+        <div class="dialogue-speaker"><div class="speaker-dot"></div><span id="spk-name-4">Sage</span></div>
+        <div class="dialogue-text" id="dlg-txt-4">This is the Gate of Balance. It opens when light and shadow stay in the right relationship.</div>
+        <div class="choices" id="gate-choices" style="display:none">
+          <button class="choice-btn" onclick="goScreen('screen-5')">Examine the gate</button>
+          <button class="choice-btn" onclick="sageExplainBalance()">Ask Sage what &#8220;balance&#8221; means</button>
+        </div>
+        <div class="dialogue-continue" id="gate-continue">
+          <button class="btn-continue primary" onclick="advanceGate()">Continue &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 5 — Task
+════════════════════════════════════ -->
+<div class="screen" id="screen-5">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/meadow-bg.png" alt="gate">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="particles" id="particles-5"></div>
+
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:62%"></div></div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-label">Persistence</div>
+        <div class="persist-row">
+          <div class="persist-orbs" id="persist-orbs2">
+            <div class="orb" id="p2-1"></div><div class="orb" id="p2-2"></div>
+            <div class="orb" id="p2-3"></div><div class="orb" id="p2-4"></div>
+            <div class="orb" id="p2-5"></div>
+          </div>
+          <div class="persist-label" id="persist-lbl">0 moments</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-float">
+      <div class="float-btn" id="sage-float-btn" onclick="toggleSageBubble()">
+        <span>&#9784;</span>
+        <div class="float-tip">Ask Sage</div>
+      </div>
+      <div class="float-btn" onclick="toggleVisual()">
+        <span>&#128202;</span>
+        <div class="float-tip">Visual model</div>
+      </div>
+      <div class="float-btn">
+        <span>&#128214;</span>
+        <div class="float-tip">Journey</div>
+      </div>
+    </div>
+
+    <div class="sage-bubble" id="sage-bubble">
+      <div class="sage-bubble-txt" id="sage-bubble-txt">What do you notice about 6 and 3? How are they connected?</div>
+      <div class="sage-bubble-btns">
+        <button class="sage-bubble-btn" onclick="sageHint2()">Another hint</button>
+        <button class="sage-bubble-btn" onclick="closeSage()">Let me try</button>
+      </div>
+    </div>
+
+    <div class="dialogue-area">
+      <div class="dialogue-box">
+        <div class="task-panel-title" style="font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--txtm);margin-bottom:10px">Current Gate Setting</div>
+        <div class="gate-display">
+          <div class="gate-val"><div class="gate-val-num">6</div><div class="gate-val-lbl">Light</div></div>
+          <div class="gate-sep">&#58;</div>
+          <div class="gate-val"><div class="gate-val-num">3</div><div class="gate-val-lbl">Shadow</div></div>
+        </div>
+        <div class="gate-visual">
+          <div class="gate-panel dim" id="gp1"></div>
+          <div class="gate-panel dim" id="gp2"></div>
+          <div class="gate-panel dim" id="gp3"></div>
+        </div>
+        <div style="font-family:var(--serif);font-size:14px;font-style:italic;color:var(--txtm);text-align:center;margin-bottom:14px">Find another pair of values that keeps the same balance.</div>
+        <div class="visual-model" id="visual-model">
+          <div class="bar-row">
+            <div class="bar-label">Light</div>
+            <div class="bar-track"><div class="bar-fill light" id="bar-light" style="width:60%"></div></div>
+            <div class="bar-num" id="bar-ln">6</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Shadow</div>
+            <div class="bar-track"><div class="bar-fill shadow" id="bar-shadow" style="width:30%"></div></div>
+            <div class="bar-num" id="bar-sn">3</div>
+          </div>
+          <div style="font-family:var(--sans);font-size:11px;color:var(--txtm);text-align:center;margin-top:6px">6:3 &#8212; try 12:6 or 2:1</div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <div class="input-label">Light</div>
+            <input type="number" id="inp-light" placeholder="?" min="1" max="99" oninput="updateVisual()">
+          </div>
+          <div class="input-sep" style="padding-bottom:10px">&#58;</div>
+          <div class="input-group">
+            <div class="input-label">Shadow</div>
+            <input type="number" id="inp-shadow" placeholder="?" min="1" max="99" oninput="updateVisual()">
+          </div>
+        </div>
+        <div class="feedback-bar" id="feedback"></div>
+        <div class="task-btns" style="margin-top:12px">
+          <button class="task-btn secondary" onclick="toggleSageBubble()">Ask Sage</button>
+          <button class="task-btn primary" onclick="testIdea()">Test My Idea</button>
+        </div>
+        <div class="task-hint">&#8220;Try anything first. You do not need to be perfect.&#8221;</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 6 — Reflection
+════════════════════════════════════ -->
+<div class="screen" id="screen-6">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/meadow-bg.png" alt="meadow">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:88%"></div></div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box">
+        <div class="dialogue-speaker"><div class="speaker-dot"></div>Reflection</div>
+        <div class="reflection-panel show">
+          <div class="ref-title">What did you notice?</div>
+          <div class="ref-q">What helped you most in this challenge?</div>
+          <div class="ref-choices" id="ref1">
+            <button class="ref-choice" onclick="selectRef(this,'ref1')">I noticed a pattern between the numbers</button>
+            <button class="ref-choice" onclick="selectRef(this,'ref1')">I tested different ideas until one worked</button>
+            <button class="ref-choice" onclick="selectRef(this,'ref1')">I used the visual model</button>
+            <button class="ref-choice" onclick="selectRef(this,'ref1')">I asked Sage for help</button>
+          </div>
+          <div class="ref-q">How did it feel when the first try did not work?</div>
+          <textarea class="ref-textarea" placeholder="Write anything — there is no wrong answer here&#8230;" rows="2"></textarea>
+          <button class="task-btn primary" style="width:100%" onclick="goScreen('screen-7')">Save reflection &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 7 — Chapter End
+════════════════════════════════════ -->
+<div class="screen" id="screen-7">
+  <div class="scene">
+    <div class="scene-bg">
+      <img src="../images/meadow-bg.png" alt="meadow">
+      <div class="scene-bg-overlay"></div>
+    </div>
+    <div class="hud-top">
+      <div class="hud-card">
+        <div class="hud-label">Chapter Progress</div>
+        <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+        <div style="font-family:var(--sans);font-size:10px;color:var(--sage-light);margin-top:4px">Complete</div>
+      </div>
+    </div>
+    <div class="dialogue-area fade-in">
+      <div class="dialogue-box" style="text-align:center">
+        <div style="font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--txtm);margin-bottom:10px">Chapter Complete</div>
+        <div style="font-family:var(--serif);font-size:24px;font-weight:600;color:var(--goldl);margin-bottom:16px">Chapter 1: The Broken Gate</div>
+        <div style="display:flex;justify-content:center;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+          <div style="background:rgba(200,168,75,0.1);border:1px solid rgba(200,168,75,0.2);border-radius:8px;padding:10px 14px;text-align:center">
+            <div style="font-family:var(--serif);font-size:15px;font-weight:600;color:var(--goldl)">Ratio</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Concept explored</div>
+          </div>
+          <div style="background:rgba(90,138,90,0.12);border:1px solid rgba(90,138,90,0.2);border-radius:8px;padding:10px 14px;text-align:center">
+            <div style="font-family:var(--serif);font-size:15px;font-weight:600;color:var(--sage-light)" id="end-persist">3</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Persistence moments</div>
+          </div>
+          <div style="background:rgba(106,74,154,0.12);border:1px solid rgba(106,74,154,0.2);border-radius:8px;padding:10px 14px;text-align:center">
+            <div style="font-family:var(--serif);font-size:15px;font-weight:600;color:var(--purplel)">Saved</div>
+            <div style="font-family:var(--sans);font-size:10px;color:var(--txtm);margin-top:2px">Reflection in Journey</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.06)">
+          <div style="font-family:var(--serif);font-size:13px;font-style:italic;color:var(--sage-light);line-height:1.6">
+            &#8220;The gate is not fully restored yet. But now the path is opening.&#8221;<br>
+            <span style="color:var(--txtm);margin-top:4px;display:block">In Mathage, progress comes from how you keep thinking.</span>
+          </div>
+          <div style="font-family:var(--sans);font-size:11px;color:var(--txtm);margin-top:6px">&#8212; Sage</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn-continue primary" style="width:100%;justify-content:center;display:flex;padding:12px" onclick="window.location.href='chapter-ratios-2.html'">Continue to Chapter 2 &#8594;</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn-continue" style="flex:1;justify-content:center;display:flex" onclick="window.location.href='../story.html'">Story Map</button>
+            <button class="btn-continue" style="flex:1;justify-content:center;display:flex">View My Journey</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-card">
+    <div class="success-glow">&#10022; &#10022; &#10022;</div>
+    <div class="success-title">The balance is restored.</div>
+    <div class="success-sub">&#8220;You did not just find numbers.<br>You noticed a relationship.&#8221; &#8212; Sage</div>
+    <div class="success-badges">
+      <div class="badge"><div class="badge-val">+1</div><div class="badge-lbl">Persistence Light</div></div>
+      <div class="badge"><div class="badge-val">+1</div><div class="badge-lbl">Memory saved</div></div>
+    </div>
+    <div class="success-btns">
+      <button class="success-btn primary" onclick="closeSuccess()">Continue &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+var state = {
+  currentScreen: 'screen-1',
+  dialogueStep: 0,
+  gateStep: 0,
+  persistCount: 0,
+  attempts: 0,
+  sageHintLevel: 0,
+  learnerType: null,
+};
+
+// ── Dialogue data ──
+var dlg2 = [
+  {speaker:'Narration', text:'The air feels different the moment you step into Mathage.'},
+  {speaker:'Sage', text:'Welcome. I\'m Sage. This world responds to how you think.'},
+  {speaker:'Sage', text:'Something ahead has fallen out of balance. Will you help me restore it?'},
+];
+var dlg4 = [
+  {speaker:'Sage', text:'This is the Gate of Balance. It opens when light and shadow stay in the right relationship.'},
+  {speaker:'Sage', text:'The numbers can change. The balance cannot.'},
+];
+
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+  state.currentScreen = id;
+}
+
+function advanceDialogue2() {
+  state.dialogueStep++;
+  if(state.dialogueStep >= dlg2.length){
+    goScreen('screen-3');
+    return;
+  }
+  var d = dlg2[state.dialogueStep];
+  document.getElementById('spk-name-2').textContent = d.speaker;
+  document.getElementById('dlg-txt-2').textContent = d.text;
+  var dot = document.querySelector('#dialogue-2 .speaker-dot');
+  dot.style.background = d.speaker === 'Sage' ? '#5A8A5A' : 'rgba(200,168,75,0.5)';
+}
+
+function makeChoice(type) {
+  state.learnerType = type;
+  goScreen('screen-4');
+}
+
+function advanceGate() {
+  state.gateStep++;
+  if(state.gateStep >= dlg4.length){
+    document.getElementById('gate-continue').style.display = 'none';
+    document.getElementById('gate-choices').style.display = 'flex';
+    return;
+  }
+  document.getElementById('dlg-txt-4').textContent = dlg4[state.gateStep].text;
+}
+
+function sageExplainBalance() {
+  document.getElementById('dlg-txt-4').textContent = 'Sage: "Balance here means a relationship that stays the same. If light is twice shadow, it must always be twice shadow &#8212; even as the numbers change."';
+  document.getElementById('gate-choices').style.display = 'none';
+  var cont = document.getElementById('gate-continue');
+  cont.style.display = 'flex';
+  cont.querySelector('button').onclick = function(){ goScreen('screen-5'); };
+  state.gateStep = dlg4.length;
+}
+
+// ── Task logic ──
+var persistOrbs = 0;
+
+function updateVisual() {
+  var l = parseFloat(document.getElementById('inp-light').value) || 0;
+  var s = parseFloat(document.getElementById('inp-shadow').value) || 0;
+  if(l > 0 && s > 0){
+    var max = Math.max(l, s, 12);
+    document.getElementById('bar-light').style.width = Math.min(100, (l/max)*100) + '%';
+    document.getElementById('bar-shadow').style.width = Math.min(100, (s/max)*100) + '%';
+    document.getElementById('bar-ln').textContent = l;
+    document.getElementById('bar-sn').textContent = s;
+  }
+}
+
+function testIdea() {
+  var l = parseFloat(document.getElementById('inp-light').value);
+  var s = parseFloat(document.getElementById('inp-shadow').value);
+  var fb = document.getElementById('feedback');
+
+  if(!l || !s || isNaN(l) || isNaN(s)){
+    fb.textContent = 'Enter both a Light and a Shadow value to test.';
+    fb.className = 'feedback-bar show wrong';
+    return;
+  }
+
+  state.attempts++;
+  addPersist();
+
+  var ratio = l / s;
+  var target = 6 / 3; // = 2
+  var diff = Math.abs(ratio - target);
+
+  if(diff < 0.001){
+    // correct
+    setGatePanels('bright');
+    fb.textContent = 'The light steadies and the gate begins to open. You found the balance.';
+    fb.className = 'feedback-bar show correct';
+    setTimeout(function(){ showSageRule('correct'); }, 800);
+    setTimeout(function(){
+      document.getElementById('success-overlay').classList.add('show');
+    if (window.SAGE) setTimeout(function(){ window.SAGE.awardCoins(10, 'Balance restored! +10 coins'); }, 800);
+      document.getElementById('end-persist').textContent = state.persistCount;
+    }, 800);
+    spawnParticles('particles-5');
+  } else if(diff < 0.5){
+    setGatePanels('glow');
+    fb.textContent = 'The light steadies a little. This feels closer. Keep adjusting.';
+    fb.className = 'feedback-bar show close';
+    if(state.attempts >= 2) showSageAfterDelay();
+  } else {
+    setGatePanels('dim');
+    fb.textContent = 'The gate flickers. The balance still feels off. Try again.';
+    fb.className = 'feedback-bar show wrong';
+    setTimeout(function(){
+      fetch('/api/sage-hint', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({mode:'story',task:'ratio_gate_1',concept:'ratio',goal:'find equivalent ratio to 6:3',attempts:state.attempts||0,student_action:'wrong answer',hint_level:Math.min(3,1+Math.floor((state.attempts||0)/2))})
+      }).then(function(r){return r.json();}).then(function(d){
+        if(d&&d.message) displaySageBubble(d.message);
+        else showSageRule('wrong');
+      }).catch(function(){ showSageRule('wrong'); });
+    }, 1200);
+    if(state.attempts >= 2) showSageAfterDelay();
+  }
+}
+
+function setGatePanels(state){
+  ['gp1','gp2','gp3'].forEach(function(id){
+    var el = document.getElementById(id);
+    el.className = 'gate-panel ' + state;
+  });
+}
+
+function addPersist(){
+  if(persistOrbs < 5){
+    persistOrbs++;
+    state.persistCount++;
+    var orb = document.getElementById('p2-' + persistOrbs);
+    if(orb){ orb.classList.add('lit'); }
+    var lbl = document.getElementById('persist-lbl');
+    if(lbl) lbl.textContent = state.persistCount + (state.persistCount === 1 ? ' moment' : ' moments');
+  }
+}
+
+function showSageAfterDelay(){
+  setTimeout(function(){
+    document.getElementById('sage-bubble').classList.add('show');
+  }, 600);
+}
+
+function toggleSage(){
+  // Try Gemini API first
+  if (window.sageAskHint) {
+    var l = parseFloat((document.getElementById('inp-light')||{}).value) || 0;
+    var s = parseFloat((document.getElementById('inp-shadow')||{}).value) || 0;
+    window.sageAskHint({
+      mode: 'story',
+      task: 'ratio_gate_1',
+      concept: 'ratio',
+      goal: 'find equivalent ratio to 6:3',
+      attempts: state.attempts || 0,
+      student_action: (l && s) ? 'entered ' + l + ':' + s : 'asked for hint',
+      hint_level: Math.min(3, 1 + Math.floor((state.attempts || 0) / 2)),
+    });
+  } else {
+    // Fallback: show local bubble
+    var b = document.getElementById('sage-bubble');
+    if(b) b.classList.toggle('show');
+  }
+}
+function toggleSageBubble_old_unused(){
+  var b = document.getElementById('sage-bubble');
+  if(b) b.classList.toggle('show');
+}
+function closeSage(){
+  var b = document.getElementById('sage-bubble');
+  if(b) b.classList.remove('show');
+  addPersist();
+}
+
+function sageHint2(){
+  state.sageHintLevel++;
+  var txt = document.getElementById('sage-bubble-txt');
+  if(state.sageHintLevel === 1){
+    txt.textContent = 'If both numbers grow in the same way, can the balance stay the same? Try doubling both 6 and 3.';
+    document.getElementById('visual-model').classList.add('show');
+  } else {
+    txt.textContent = 'Try Light = 12, Shadow = 6. Or Light = 2, Shadow = 1. Do you see the pattern?';
+  }
+  addPersist();
+}
+
+function toggleVisual(){
+  var v = document.getElementById('visual-model');
+  v.classList.toggle('show');
+}
+
+function closeSuccess(){
+  document.getElementById('success-overlay').classList.remove('show');
+  goScreen('screen-6');
+}
+
+function selectRef(el, groupId){
+  document.querySelectorAll('#'+groupId+' .ref-choice').forEach(function(b){b.classList.remove('sel')});
+  el.classList.add('sel');
+}
+
+function spawnParticles(containerId){
+  var container = document.getElementById(containerId);
+  if(!container) return;
+  for(var i=0;i<16;i++){
+    var p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = (20 + Math.random()*60)+'%';
+    p.style.bottom = (15 + Math.random()*20)+'%';
+    p.style.animationDelay = (Math.random()*0.8)+'s';
+    p.style.width = p.style.height = (4+Math.random()*6)+'px';
+    container.appendChild(p);
+    setTimeout(function(el){el.remove()},3000,p);
+  }
+}
+
+function saveProgress(){ alert('Progress saved.'); }
+function exitChapter(){ if(confirm('Exit chapter? Progress will be saved.')) window.location.href='../story.html'; }
+
+// spawn ambient particles on load
+spawnParticles('particles-1');
+
+// ══════════════════════════════════════════
+// SAGE RULE-BASED SCAFFOLDING SYSTEM
+// ══════════════════════════════════════════
+var sageIdleTimer = null;
+var sageLastAction = Date.now();
+var sageShown = false;
+
+// Reset idle timer on any student interaction
+function resetIdleTimer() {
+  sageLastAction = Date.now();
+  clearTimeout(sageIdleTimer);
+  sageIdleTimer = setTimeout(function() {
+    var elapsed = (Date.now() - sageLastAction) / 1000;
+    if (elapsed >= 40 && document.getElementById('screen-5') &&
+        document.getElementById('screen-5').classList.contains('active')) {
+      showSageRule('idle');
+    }
+  }, 40000);
+}
+
+// Core rule engine
+function showSageRule(trigger) {
+  var attempts = state.attempts || 0;
+  var msg = '';
+
+  if (trigger === 'idle') {
+    msg = "You can slow down here. Take a moment to look at the two numbers and notice their relationship.";
+  } else if (trigger === 'ask') {
+    if (attempts === 0) {
+      msg = "Try noticing the relationship between the two values. How do they compare to each other?";
+    } else if (attempts === 1) {
+      msg = "Try noticing the relationship between the two values. How do Light and Shadow relate to each other?";
+    } else if (attempts === 2) {
+      msg = "What stays the same even when the numbers change? Think about the relationship, not the size.";
+    } else if (attempts >= 3) {
+      msg = "You have tried several times — that shows persistence. What if both numbers changed in the same way?";
+    }
+  } else if (trigger === 'wrong') {
+    if (attempts === 1) {
+      msg = "The gate flickered. Try noticing the relationship between 6 and 3 — how are they connected?";
+    } else if (attempts === 2) {
+      msg = "What stays the same even when the numbers change? The balance is about a relationship, not a specific size.";
+    } else if (attempts >= 3) {
+      msg = "You are staying with this problem. That matters. What if you tried changing both numbers together?";
+    }
+  } else if (trigger === 'correct') {
+    msg = "You noticed the relationship. That is exactly how proportional thinking works.";
+  }
+
+  if (!msg) return;
+
+  // Show in Sage bubble (floating)
+  var bubble = document.getElementById('sage-bubble');
+  if (bubble) {
+    var txt = document.getElementById('sage-bubble-txt');
+    if (txt) txt.textContent = msg;
+    bubble.classList.add('show');
+    setTimeout(function() { bubble.classList.remove('show'); }, 5000);
+  }
+
+  // Also show in feedback area if on screen 5
+  var fb = document.getElementById('feedback');
+  if (fb && trigger !== 'ask') {
+    // feedback bar handles wrong/correct separately
+  }
+
+  sageShown = true;
+}
+
+function toggleSage() {
+  addPersist();
+  // Try Gemini API, fallback to rules
+  var l = parseFloat((document.getElementById('inp-light')||{}).value) || 0;
+  var s = parseFloat((document.getElementById('inp-shadow')||{}).value) || 0;
+  fetch('/api/sage-hint', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      mode: 'story',
+      task: 'ratio_gate_1',
+      concept: 'ratio',
+      goal: 'find equivalent ratio to 6:3',
+      attempts: state.attempts || 0,
+      student_action: (l && s) ? 'entered ' + l + ':' + s : 'asked for hint',
+      hint_level: Math.min(3, 1 + Math.floor((state.attempts||0) / 2)),
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if (data && data.message) {
+      displaySageBubble(data.message);
+    } else {
+      showSageRule('ask'); // fallback
+    }
+  })
+  .catch(function(){
+    showSageRule('ask'); // fallback on network error
+  });
+}
+
+function toggleSageBubble() {
+  toggleSage();
+}
+
+function displaySageBubble(msg) {
+  var bubble = document.getElementById('sage-bubble');
+  if (bubble) {
+    var txt = document.getElementById('sage-bubble-txt');
+    if (txt) txt.textContent = msg;
+    else bubble.textContent = msg;
+    bubble.classList.add('show');
+    setTimeout(function(){ bubble.classList.remove('show'); }, 6000);
+  }
+}
+
+// Hook into input fields for idle detection
+document.addEventListener('input', resetIdleTimer);
+document.addEventListener('click', function(e) {
+  if (e.target.closest && e.target.closest('.task-btn, .choice-btn, .btn-continue')) {
+    resetIdleTimer();
+  }
+});
+
+</script>
+
+</body>
+</html>
