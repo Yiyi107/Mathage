@@ -653,3 +653,57 @@
   }
   /* Add bottom padding so content not hidden by filter bar */
   #journey-sage-panel { margin-bottom: 60px !important; }
+
+/* FIX: Index page coach section */
+
+  /* FIX: Index coach section overlap */
+  .coach-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    padding: 0 !important;
+  }
+  .coach-card {
+    position: relative !important;
+    margin-top: 20px !important;
+  }
+  .attempt-pill {
+    position: absolute !important;
+    top: -13px !important;
+    right: 12px !important;
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+    white-space: nowrap !important;
+  }
+  .hints {
+    gap: 6px !important;
+  }
+  .hint {
+    padding: 8px 10px !important;
+  }
+  .hint p {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+  .hlvl {
+    font-size: 9px !important;
+    padding: 2px 6px !important;
+    flex-shrink: 0 !important;
+  }
+  .coach-speech {
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+    line-height: 1.55 !important;
+  }
+  .coach-desc {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 16px !important;
+  }
+  .clist li {
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+  .cbar {
+    height: 14px !important;
+    margin-top: 2px !important;
+  }
